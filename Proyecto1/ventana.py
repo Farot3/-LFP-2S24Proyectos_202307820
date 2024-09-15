@@ -1,7 +1,6 @@
-import tkinter as tk
 import subprocess
-from tkinter import messagebox
-from tkinter import filedialog
+import tkinter as tk
+from tkinter import filedialog, messagebox
 
 
 def load_file():
@@ -14,51 +13,40 @@ def load_file():
 
 
 def Enviar_Datos():
-    content = output_area.get("1.0", tk.END)
-    if not content.strip():
+    content = output_area.get("1.0", tk.END).strip()
+    if not content:
         messagebox.showerror("Error", "No hay contenido para analizar.")
         return
 
     try:
+        # Ejecutar el programa Fortran y enviar el contenido
         resultado = subprocess.run(
-            ["./analisis.exe"],
-            input=content,  # Enviar el dato como cadena de texto
-            stdout=subprocess.PIPE,  # Capturar la salida del programa
+            [
+                "./analisis.exe"
+            ],  # Asegúrate de que este es el nombre correcto de tu ejecutable Fortran
+            input=content,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
             text=True,
+            encoding="utf-8",
         )
 
-        # Print Fortran output for debugging
-        print("Salida del programa Fortran:")
-        print(resultado.stdout)
+        if resultado.returncode != 0:
+            raise Exception(f"Error en Fortran: {resultado.stderr}")
 
-        if resultado.stderr:
-            print("Error del programa Fortran:")
-            print(resultado.stderr)
+        # Procesar la salida
+        lineas_salida = resultado.stdout.strip().split("\n")
+        if len(lineas_salida) >= 3:
+            mensaje = f"Análisis completado.\nTokens identificados: {lineas_salida[1]}\nErrores encontrados: {lineas_salida[2]}"
+            output_area.insert(tk.END, mensaje + "\n")
 
-        # Process Fortran output
-        lines = resultado.stdout.strip().split("\n")
-
-        # Display tokens in the output area
-        output_area.delete("1.0", tk.END)
-        output_area.insert(tk.END, "Tokens Identificados:\n")
-        for line in lines:
-            if line.startswith("TOKEN:"):
-                _, lexema, tipo, fila, columna = line.split(",")
-                output_area.insert(
-                    tk.END,
-                    f"Lexema: {lexema}, Tipo: {tipo}, Fila: {fila}, Columna: {columna}\n",
-                )
-
-        messagebox.showinfo(
-            "Proceso completado",
-            "El análisis léxico ha sido completado. Revisa el área de salida para ver los resultados.",
-        )
+            messagebox.showinfo("Proceso completado", mensaje)
+        else:
+            raise Exception("La salida de Fortran no tiene el formato esperado")
 
     except Exception as e:
-        print(f"Error: No se pudo ejecutar el programa Fortran: {str(e)}")
-        messagebox.showerror(
-            "Error", f"No se pudo ejecutar el programa Fortran: {str(e)}"
-        )
+        print(f"{str(e)}")
+        messagebox.showerror("Error", f"No se pudo ejecutar el análisis: {str(e)}")
 
 
 def save_file():
