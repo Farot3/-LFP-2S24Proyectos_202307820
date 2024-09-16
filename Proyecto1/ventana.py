@@ -1,7 +1,7 @@
 import subprocess
 import tkinter as tk
 from tkinter import filedialog, messagebox
-
+from PIL import Image, ImageTk
 
 def load_file():
     file_path = filedialog.askopenfilename(filetypes=[("ORG files", "*.ORG")])
@@ -19,11 +19,8 @@ def Enviar_Datos():
         return
 
     try:
-        # Ejecutar el programa Fortran y enviar el contenido
         resultado = subprocess.run(
-            [
-                "./analisis.exe"
-            ],  # Asegúrate de que este es el nombre correcto de tu ejecutable Fortran
+            ["./analisis.exe"],
             input=content,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -34,19 +31,54 @@ def Enviar_Datos():
         if resultado.returncode != 0:
             raise Exception(f"Error en Fortran: {resultado.stderr}")
 
-        # Procesar la salida
-        lineas_salida = resultado.stdout.strip().split("\n")
-        if len(lineas_salida) >= 3:
-            mensaje = f"Análisis completado.\nTokens identificados: {lineas_salida[1]}\nErrores encontrados: {lineas_salida[2]}"
-            output_area.insert(tk.END, mensaje + "\n")
+        output = resultado.stdout.strip()
+        print("Depuración: Salida del programa Fortran:")
+        print(output)
 
+        # Procesar la salida para dividirla en partes
+        partes = output.split(",")
+        if len(partes) >= 3:
+            pais_nombre = partes[0].strip()
+            poblacion = partes[1].strip()
+            bandera_ruta = partes[2].strip()
+
+            # Actualizar la información en la interfaz
+            pais_label.config(text=f"País seleccionado: {pais_nombre}")
+            poblacion_label.config(text=f"Población: {poblacion}")
+
+            # Cargar y mostrar la bandera
+            try:
+                imagen = Image.open(bandera_ruta)
+                imagen = imagen.resize((150, 100), Image.Resampling.LANCZOS)
+                foto = ImageTk.PhotoImage(imagen)
+                bandera_label.config(image=foto)
+                bandera_label.image = foto
+            except Exception as e:
+                print(f"Error al cargar la imagen: {str(e)}")
+                bandera_label.config(image="")
+
+            mensaje = f"Análisis completado.\nPaís seleccionado: {pais_nombre}\nPoblación: {poblacion}"
+            output_area.insert(tk.END, "\n" + mensaje + "\n")
             messagebox.showinfo("Proceso completado", mensaje)
         else:
-            raise Exception("La salida de Fortran no tiene el formato esperado")
+            raise Exception("No se pudo extraer la información del país seleccionado")
 
     except Exception as e:
-        print(f"{str(e)}")
+        print(f"Error: {str(e)}")
         messagebox.showerror("Error", f"No se pudo ejecutar el análisis: {str(e)}")
+
+
+def cargar_bandera(ruta):
+    try:
+        print(f"Depuración: Cargando imagen desde: {ruta}")
+        imagen = Image.open(ruta)
+        imagen = imagen.resize((150, 100), Image.Resampling.LANCZOS)  # Ajustar tamaño
+        foto = ImageTk.PhotoImage(imagen)
+        bandera_label.config(image=foto)
+        bandera_label.image = foto  # Mantener una referencia
+    except Exception as e:
+        print(f"No se pudo cargar la imagen: {str(e)}")
+        bandera_label.config(image="")
 
 
 def save_file():
@@ -134,7 +166,7 @@ label_tipo_grafica = tk.Label(
 label_tipo_grafica.pack(side=tk.TOP, pady=10)
 
 # Simulación de árbol en el canvas
-tree_canvas = tk.Canvas(right_frame, width=380, height=300, bg="#262626")
+tree_canvas = tk.Canvas(right_frame, width=380, height=200, bg="#262626")
 tree_canvas.pack(pady=10)
 
 # Información del país
@@ -145,19 +177,15 @@ info_frame.pack(side=tk.BOTTOM, fill=tk.X, pady=10)
 label_info_frame = tk.Frame(info_frame, bg="#1a1a1a")
 label_info_frame.pack(side=tk.LEFT, fill=tk.X)
 
-label_nombre = tk.Label(
-    label_info_frame, text="País seleccionado: ", bg="#1a1a1a", fg="white"
-)
-label_nombre.pack(anchor="w")
+pais_label = tk.Label(info_frame, text="País seleccionado:", bg="#1a1a1a", fg="white")
+pais_label.pack(anchor="w")
 
-label_poblacion = tk.Label(
-    label_info_frame, text="Población: ", bg="#1a1a1a", fg="white"
-)
-label_poblacion.pack(anchor="w")
+poblacion_label = tk.Label(info_frame, text="Población:", bg="#1a1a1a", fg="white")
+poblacion_label.pack(anchor="w")
 
 # Colocación de la imagen a la derecha
-label_bandera = tk.Label(info_frame, bg="#1a1a1a")
-label_bandera.pack(side=tk.RIGHT, padx=10)
+bandera_label = tk.Label(info_frame, bg="#1a1a1a")
+bandera_label.pack(side=tk.RIGHT, padx=10)
 
 # Ejecutar la ventana
 ventana.mainloop()

@@ -15,11 +15,32 @@ module analizador_lexico
         integer :: columna
     end type error
     
+    type pais
+        character(len=100) :: nombre
+        character(len=100) :: continente
+        integer :: poblacion
+        real :: saturacion
+        character(len=200) :: bandera
+    end type pais
+    
+    type continente
+        character(len=100) :: nombre
+        real :: saturacion_promedio
+        integer :: num_paises
+    end type continente
+    
     integer, parameter :: MAX_TOKENS = 1000
     integer, parameter :: MAX_ERRORES = 100
+    integer, parameter :: MAX_PAISES = 100
+    integer, parameter :: MAX_CONTINENTES = 10
     
     character(len=20), dimension(11), parameter :: palabras_reservadas = [character(len=20) :: &
         "grafica", "nombre", "continente", "pais", "poblacion", "saturacion", "bandera", ":", "{", "}", ";"]
+    
+    type(pais), dimension(MAX_PAISES) :: paises
+    type(continente), dimension(MAX_CONTINENTES) :: continentes
+    integer :: num_paises = 0
+    integer :: num_continentes = 0
     
 contains
 
@@ -271,6 +292,247 @@ subroutine generar_html(tokens, num_tokens, errores, num_errores)
     close(unidad)
 end subroutine generar_html
 
+subroutine calcular_saturacion_continentes()
+    integer :: i, j
+    real :: suma_saturacion
+    
+    do i = 1, num_continentes
+        suma_saturacion = 0.0
+        continentes(i)%num_paises = 0
+        do j = 1, num_paises
+            if (trim(paises(j)%continente) == trim(continentes(i)%nombre)) then
+                suma_saturacion = suma_saturacion + paises(j)%saturacion
+                continentes(i)%num_paises = continentes(i)%num_paises + 1
+            end if
+        end do
+        if (continentes(i)%num_paises > 0) then
+            continentes(i)%saturacion_promedio = suma_saturacion / continentes(i)%num_paises
+        else
+            continentes(i)%saturacion_promedio = 0.0
+        end if
+    end do
+end subroutine calcular_saturacion_continentes
+
+subroutine seleccionar_pais_menor_saturacion()
+    integer :: i, indice_pais_seleccionado
+    real :: menor_saturacion
+    
+    if (num_paises == 0) then
+        print *, "Error: No hay datos suficientes para seleccionar un país."
+        return
+    end if
+    
+    menor_saturacion = paises(1)%saturacion
+    indice_pais_seleccionado = 1
+    
+    do i = 2, num_paises
+        if (paises(i)%saturacion < menor_saturacion) then
+            menor_saturacion = paises(i)%saturacion
+            indice_pais_seleccionado = i
+        end if
+    end do
+    
+    print *, trim(paises(indice_pais_seleccionado)%nombre) // "," // trim(adjustl(itoa(paises(indice_pais_seleccionado)%poblacion))) // "," // trim(paises(indice_pais_seleccionado)%bandera)
+    !print *, "{"
+    !print *, '  "PAIS_SELECCIONADO": {'
+    !print *, '    "nombre": "' // trim(paises(indice_pais_seleccionado)%nombre) // '",'
+    !print *, '    "poblacion":' , trim(adjustl(itoa(paises(indice_pais_seleccionado)%poblacion))), ','
+    !print *, '    "bandera": "' // trim(paises(indice_pais_seleccionado)%bandera) // '"'
+    !print *, '  }'
+    !print *, "}"
+end subroutine seleccionar_pais_menor_saturacion
+
+function itoa(i) result(str)
+    implicit none
+    integer, intent(in) :: i
+    character(len=12) :: str
+    write(str, '(I0)') i
+end function itoa
+
+subroutine procesar_datos(tokens, num_tokens)
+    type(token), intent(in) :: tokens(MAX_TOKENS)
+    integer, intent(in) :: num_tokens
+    integer :: i, estado, nivel_anidamiento
+    character(len=100) :: nombre_pais, nombre_continente, nombre_grafica
+    integer :: poblacion
+    real :: saturacion
+    character(len=200) :: bandera
+    
+    estado = 0
+    nivel_anidamiento = 0
+    do i = 1, num_tokens
+        select case (estado)
+        case (0) ! Esperando "grafica"
+            if (tokens(i)%lexema == "grafica") then
+                estado = 1
+            end if
+        case (1) ! Esperando "{"
+            if (tokens(i)%lexema == "{") then
+                nivel_anidamiento = nivel_anidamiento + 1
+                estado = 2
+            end if
+        case (2) ! Dentro de grafica
+            if (tokens(i)%lexema == "nombre") then
+                estado = 3
+            else if (tokens(i)%lexema == "continente") then
+                estado = 10
+            else if (tokens(i)%lexema == "}") then
+                nivel_anidamiento = nivel_anidamiento - 1
+                if (nivel_anidamiento == 0) then
+                    estado = 0
+                end if
+            end if
+        case (3) ! Esperando ":" después de nombre
+            if (tokens(i)%lexema == ":") then
+                estado = 4
+            end if
+        case (4) ! Esperando nombre de la gráfica
+            if (tokens(i)%tipo == "CADENA") then
+                nombre_grafica = tokens(i)%lexema(2:len_trim(tokens(i)%lexema)-1)
+                estado = 2
+            end if
+        case (10) ! Esperando "{" después de continente
+            if (tokens(i)%lexema == "{") then
+                nivel_anidamiento = nivel_anidamiento + 1
+                estado = 11
+            end if
+        case (11) ! Dentro de continente
+            if (tokens(i)%lexema == "nombre") then
+                estado = 12
+            else if (tokens(i)%lexema == "pais") then
+                estado = 20
+            else if (tokens(i)%lexema == "}") then
+                nivel_anidamiento = nivel_anidamiento - 1
+                if (nivel_anidamiento == 1) then
+                    estado = 2
+                end if
+            end if
+        case (12) ! Esperando ":" después de nombre de continente
+            if (tokens(i)%lexema == ":") then
+                estado = 13
+            end if
+        case (13) ! Esperando nombre del continente
+            if (tokens(i)%tipo == "CADENA") then
+                nombre_continente = tokens(i)%lexema(2:len_trim(tokens(i)%lexema)-1)
+                call actualizar_continente(nombre_continente, 0.0)
+                estado = 11
+            end if
+        case (20) ! Esperando "{" después de pais
+            if (tokens(i)%lexema == "{") then
+                nivel_anidamiento = nivel_anidamiento + 1
+                estado = 21
+                nombre_pais = ""
+                poblacion = 0
+                saturacion = 0.0
+                bandera = ""
+            end if
+        case (21) ! Dentro de pais
+            if (tokens(i)%lexema == "nombre") then
+                estado = 22
+            else if (tokens(i)%lexema == "poblacion") then
+                estado = 24
+            else if (tokens(i)%lexema == "saturacion") then
+                estado = 26
+            else if (tokens(i)%lexema == "bandera") then
+                estado = 28
+            else if (tokens(i)%lexema == "}") then
+                nivel_anidamiento = nivel_anidamiento - 1
+                call agregar_pais(nombre_pais, nombre_continente, poblacion, saturacion, bandera)
+                if (nivel_anidamiento == 2) then
+                    estado = 11
+                end if
+            end if
+        case (22) ! Esperando ":" después de nombre de país
+            if (tokens(i)%lexema == ":") then
+                estado = 23
+            end if
+        case (23) ! Esperando nombre del país
+            if (tokens(i)%tipo == "CADENA") then
+                nombre_pais = tokens(i)%lexema(2:len_trim(tokens(i)%lexema)-1)
+                estado = 21
+            end if
+        case (24) ! Esperando ":" después de población
+            if (tokens(i)%lexema == ":") then
+                estado = 25
+            end if
+        case (25) ! Esperando valor de población
+            if (tokens(i)%tipo == "NUMERO") then
+                read(tokens(i)%lexema, *) poblacion
+                estado = 21
+            end if
+        case (26) ! Esperando ":" después de saturación
+            if (tokens(i)%lexema == ":") then
+                estado = 27
+            end if
+        case (27) ! Esperando valor de saturación
+            if (tokens(i)%tipo == "PORCENTAJE") then
+                read(tokens(i)%lexema(1:len_trim(tokens(i)%lexema)-1), *) saturacion
+                estado = 21
+            end if
+        case (28) ! Esperando ":" después de bandera
+            if (tokens(i)%lexema == ":") then
+                estado = 29
+            end if
+        case (29) ! Esperando ruta de la bandera
+            if (tokens(i)%tipo == "CADENA") then
+                bandera = tokens(i)%lexema(2:len_trim(tokens(i)%lexema)-1)
+                estado = 21
+            end if
+        end select
+    end do
+    
+    call calcular_saturacion_continentes()
+end subroutine procesar_datos
+
+subroutine agregar_pais(nombre, continente, poblacion, saturacion, bandera)
+    character(len=*), intent(in) :: nombre, continente, bandera
+    integer, intent(in) :: poblacion
+    real, intent(in) :: saturacion
+    
+    if (num_paises < MAX_PAISES) then
+        num_paises = num_paises + 1
+        paises(num_paises)%nombre = nombre
+        paises(num_paises)%continente = continente
+        paises(num_paises)%poblacion = poblacion
+        paises(num_paises)%saturacion = saturacion
+        paises(num_paises)%bandera = bandera
+        
+        call actualizar_continente(continente, saturacion)
+    else
+        print *, "Error: Número máximo de países alcanzado."
+    end if
+end subroutine agregar_pais
+
+subroutine actualizar_continente(nombre_continente, saturacion)
+    character(len=*), intent(in) :: nombre_continente
+    real, intent(in) :: saturacion
+    integer :: i, indice_continente
+    
+    indice_continente = 0
+    do i = 1, num_continentes
+        if (continentes(i)%nombre == nombre_continente) then
+            indice_continente = i
+            exit
+        end if
+    end do
+    
+    if (indice_continente == 0) then
+        if (num_continentes < MAX_CONTINENTES) then
+            num_continentes = num_continentes + 1
+            continentes(num_continentes)%nombre = nombre_continente
+            continentes(num_continentes)%saturacion_promedio = saturacion
+            continentes(num_continentes)%num_paises = 1
+        else
+            print *, "Error: Número máximo de continentes alcanzado."
+        end if
+    else
+        continentes(indice_continente)%saturacion_promedio = &
+            (continentes(indice_continente)%saturacion_promedio * continentes(indice_continente)%num_paises + saturacion) / &
+            (continentes(indice_continente)%num_paises + 1)
+        continentes(indice_continente)%num_paises = continentes(indice_continente)%num_paises + 1
+    end if
+end subroutine actualizar_continente
+
 end module analizador_lexico
 
 program main
@@ -298,11 +560,13 @@ program main
     end if
     
     call analizar(entrada, tokens, num_tokens, errores, num_errores)
-    call generar_html(tokens, num_tokens, errores, num_errores)
     
-    print *, "Análisis completado."
-    print '(A,I0)', "Tokens identificados: ", num_tokens
-    print '(A,I0)', "Errores encontrados: ", num_errores
-    print *, "Resultados guardados en 'resultado_analisis.html'."
+    if (num_errores > 0) then
+        call generar_html(tokens, num_tokens, errores, num_errores)
+    else
+        call procesar_datos(tokens, num_tokens)
+        call seleccionar_pais_menor_saturacion()
+        call generar_html(tokens, num_tokens, errores, num_errores)
+    end if
     
 end program main
