@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 from PIL import Image, ImageTk
 
+
 def load_file():
     file_path = filedialog.askopenfilename(filetypes=[("ORG files", "*.ORG")])
     if file_path:
@@ -54,31 +55,20 @@ def Enviar_Datos():
                 bandera_label.config(image=foto)
                 bandera_label.image = foto
             except Exception as e:
-                print(f"Error al cargar la imagen: {str(e)}")
+                print(f"Error al cargar la imagen, no se encontro: {str(e)}")
                 bandera_label.config(image="")
 
             mensaje = f"Análisis completado.\nPaís seleccionado: {pais_nombre}\nPoblación: {poblacion}"
             output_area.insert(tk.END, "\n" + mensaje + "\n")
             messagebox.showinfo("Proceso completado", mensaje)
         else:
-            raise Exception("No se pudo extraer la información del país seleccionado")
+            raise Exception(
+                "No se pudo extraer la información del país seleccionado. \nRevise el archivo con errores"
+            )
 
     except Exception as e:
         print(f"Error: {str(e)}")
         messagebox.showerror("Error", f"No se pudo ejecutar el análisis: {str(e)}")
-
-
-def cargar_bandera(ruta):
-    try:
-        print(f"Depuración: Cargando imagen desde: {ruta}")
-        imagen = Image.open(ruta)
-        imagen = imagen.resize((150, 100), Image.Resampling.LANCZOS)  # Ajustar tamaño
-        foto = ImageTk.PhotoImage(imagen)
-        bandera_label.config(image=foto)
-        bandera_label.image = foto  # Mantener una referencia
-    except Exception as e:
-        print(f"No se pudo cargar la imagen: {str(e)}")
-        bandera_label.config(image="")
 
 
 def save_file():
@@ -98,7 +88,7 @@ def exit_app():
 
 def Datos_estudiantes():
     messagebox.showinfo(
-        "Datos", "Ottoniel Fabricio Vásquez Pineda, 202307820, LFP, sección B+"
+        "Datos", "Ottoniel Fabricio Vásquez Pineda \n202307820 \nLFP, sección B+"
     )
 
 
