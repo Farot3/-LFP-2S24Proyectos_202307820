@@ -47,15 +47,12 @@ En este proyecto es un sistema en la cual ayuda a los bancos en que lugar se pue
 - Mostrar una gráfica de los países con su saturación.
 <br>
 <br>
-<br>
-<br>
 <h2 align="center"> Requisitos del sistema </h2>
 
 - Tener un archivo con la extensión .ORG.
 - Tener instalado Python en tu computadora.
 - Tener instalado Fortran
 - Tener un ide para correr el programa
-<br>
 <br>
 <br>
 
@@ -66,9 +63,7 @@ Al darle ejecutar al programa en phyton se le mostrara una interfaz que es la si
 <br>
 
 <p align="center">
-
-![Primer imagen](Interfaz.JPG)
-
+  <img src="Interfaz.JPG" width="600" />
 </p>
 
 <br>
@@ -78,9 +73,7 @@ Aquí como puede observar tiene varias cosas, en la cual tiene las diferentes op
   - *Abrir*: que en esta parte se te abre una ventana para buscar el archivo que quieres analizar, recuerda que solo se aceptan archivos con la extensión .ORG.
   <br>
   <p align="center">
-
-  ![Segunda imagen](Abrir.JPG)
-
+    <img src="Abrir.JPG" width="600" />
   </p>
   <br>
 
