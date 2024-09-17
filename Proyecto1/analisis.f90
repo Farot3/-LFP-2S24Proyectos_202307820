@@ -28,6 +28,11 @@ module analizador_lexico
         real :: saturacion_promedio
         integer :: num_paises
     end type continente
+
+    type grafica
+        character(len=100) :: nombre
+        integer :: num_continentes
+    end type grafica
     
     integer, parameter :: MAX_TOKENS = 1000
     integer, parameter :: MAX_ERRORES = 100
@@ -37,6 +42,7 @@ module analizador_lexico
     character(len=20), dimension(11), parameter :: palabras_reservadas = [character(len=20) :: &
         "grafica", "nombre", "continente", "pais", "poblacion", "saturacion", "bandera", ":", "{", "}", ";"]
     
+    type(grafica) :: grafica_actual
     type(pais), dimension(MAX_PAISES) :: paises
     type(continente), dimension(MAX_CONTINENTES) :: continentes
     integer :: num_paises = 0
@@ -333,13 +339,6 @@ subroutine seleccionar_pais_menor_saturacion()
     end do
     
     print *, trim(paises(indice_pais_seleccionado)%nombre) // "," // trim(adjustl(itoa(paises(indice_pais_seleccionado)%poblacion))) // "," // trim(paises(indice_pais_seleccionado)%bandera)
-    !print *, "{"
-    !print *, '  "PAIS_SELECCIONADO": {'
-    !print *, '    "nombre": "' // trim(paises(indice_pais_seleccionado)%nombre) // '",'
-    !print *, '    "poblacion":' , trim(adjustl(itoa(paises(indice_pais_seleccionado)%poblacion))), ','
-    !print *, '    "bandera": "' // trim(paises(indice_pais_seleccionado)%bandera) // '"'
-    !print *, '  }'
-    !print *, "}"
 end subroutine seleccionar_pais_menor_saturacion
 
 function itoa(i) result(str)
@@ -360,6 +359,7 @@ subroutine procesar_datos(tokens, num_tokens)
     
     estado = 0
     nivel_anidamiento = 0
+    grafica_actual%num_continentes = 0
     do i = 1, num_tokens
         select case (estado)
         case (0) ! Esperando "grafica"
@@ -375,6 +375,7 @@ subroutine procesar_datos(tokens, num_tokens)
             if (tokens(i)%lexema == "nombre") then
                 estado = 3
             else if (tokens(i)%lexema == "continente") then
+                grafica_actual%num_continentes = grafica_actual%num_continentes + 1
                 estado = 10
             else if (tokens(i)%lexema == "}") then
                 nivel_anidamiento = nivel_anidamiento - 1
@@ -532,6 +533,25 @@ subroutine actualizar_continente(nombre_continente, saturacion)
         continentes(indice_continente)%num_paises = continentes(indice_continente)%num_paises + 1
     end if
 end subroutine actualizar_continente
+
+function obtener_color(saturacion) result(color)
+    real, intent(in) :: saturacion
+    character(len=20) :: color
+    
+    if (saturacion <= 15.0) then
+        color = "white"
+    else if (saturacion <= 30.0) then
+        color = "blue"
+    else if (saturacion <= 45.0) then
+        color = "green"
+    else if (saturacion <= 60.0) then
+        color = "yellow"
+    else if (saturacion <= 75.0) then
+        color = "orange"
+    else
+        color = "red"
+    end if
+end function obtener_color
 
 end module analizador_lexico
 

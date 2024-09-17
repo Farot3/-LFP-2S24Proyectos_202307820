@@ -3,14 +3,21 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 from PIL import Image, ImageTk
 
+# Variables globales para almacenar las rutas de los archivos
+original_file_path = None
+current_file_path = None
+
 
 def load_file():
+    global original_file_path, current_file_path
     file_path = filedialog.askopenfilename(filetypes=[("ORG files", "*.ORG")])
     if file_path:
         with open(file_path, "r") as file:
             content = file.read()
         output_area.delete("1.0", tk.END)
         output_area.insert(tk.END, content)
+        original_file_path = file_path
+        current_file_path = file_path
 
 
 def Enviar_Datos():
@@ -72,14 +79,43 @@ def Enviar_Datos():
 
 
 def save_file():
+    global original_file_path
+    if original_file_path:
+        # Guardar en el archivo original
+        content = output_area.get("1.0", tk.END)
+        with open(original_file_path, "w") as file:
+            file.write(content)
+        messagebox.showinfo("Guardar", "Archivo guardado exitosamente.")
+    else:
+        file_path = filedialog.asksaveasfilename(
+            defaultextension=".ORG", filetypes=[("ORG files", "*.ORG")]
+        )
+        if file_path:
+            # Asegurarse de que el archivo tenga la extensión .ORG
+            if not file_path.endswith(".ORG"):
+                file_path += ".ORG"
+            original_file_path = file_path
+            content = output_area.get("1.0", tk.END)
+            with open(file_path, "w") as file:
+                file.write(content)
+            messagebox.showinfo("Guardar como", "Archivo guardado exitosamente.")
+
+
+def save_file_as():
+    global original_file_path, current_file_path
     file_path = filedialog.asksaveasfilename(
         defaultextension=".ORG", filetypes=[("ORG files", "*.ORG")]
     )
     if file_path:
+        # Asegurarse de que el archivo tenga la extensión .ORG
+        if not file_path.endswith(".ORG"):
+            file_path += ".ORG"
+        current_file_path = file_path
         content = output_area.get("1.0", tk.END)
         with open(file_path, "w") as file:
             file.write(content)
-        messagebox.showinfo("Guardar", "Archivo guardado exitosamente.")
+        messagebox.showinfo("Guardar como", "Archivo guardado exitosamente.")
+        # No actualizar original_file_path para que "Guardar" siga usando el archivo original
 
 
 def exit_app():
@@ -115,7 +151,7 @@ menu_bar.add_cascade(label="Salir", command=exit_app)
 menu_opciones.add_command(label="Abrir", command=load_file)
 menu_opciones.add_separator()
 menu_opciones.add_command(label="Guardar", command=save_file)
-menu_opciones.add_command(label="Guardar como", command=save_file)
+menu_opciones.add_command(label="Guardar como", command=save_file_as)
 
 # Crear notebook
 notebook = tk.Frame(ventana, bg="#262626")
@@ -156,7 +192,7 @@ label_tipo_grafica = tk.Label(
 label_tipo_grafica.pack(side=tk.TOP, pady=10)
 
 # Simulación de árbol en el canvas
-tree_canvas = tk.Canvas(right_frame, width=380, height=200, bg="#262626")
+tree_canvas = tk.Canvas(right_frame, width=380, height=350, bg="#262626")
 tree_canvas.pack(pady=10)
 
 # Información del país
@@ -167,15 +203,19 @@ info_frame.pack(side=tk.BOTTOM, fill=tk.X, pady=10)
 label_info_frame = tk.Frame(info_frame, bg="#1a1a1a")
 label_info_frame.pack(side=tk.LEFT, fill=tk.X)
 
-pais_label = tk.Label(info_frame, text="País seleccionado:", bg="#1a1a1a", fg="white")
+pais_label = tk.Label(
+    label_info_frame, text="País seleccionado:", bg="#1a1a1a", fg="white"
+)
 pais_label.pack(anchor="w")
 
-poblacion_label = tk.Label(info_frame, text="Población:", bg="#1a1a1a", fg="white")
+poblacion_label = tk.Label(
+    label_info_frame, text="Población:", bg="#1a1a1a", fg="white"
+)
 poblacion_label.pack(anchor="w")
 
 # Colocación de la imagen a la derecha
 bandera_label = tk.Label(info_frame, bg="#1a1a1a")
-bandera_label.pack(side=tk.RIGHT, padx=10)
+bandera_label.pack(side=tk.RIGHT, padx=20)
 
 # Ejecutar la ventana
 ventana.mainloop()
