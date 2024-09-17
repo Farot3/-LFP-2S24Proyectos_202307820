@@ -78,6 +78,13 @@ def Enviar_Datos():
     except Exception as e:
         print(f"Error: {str(e)}")
         messagebox.showerror("Error", f"No se pudo ejecutar el análisis: {str(e)}")
+        limpiar_labels()
+
+def limpiar_labels():
+    pais_label.config(text="País seleccionado:")
+    poblacion_label.config(text="Población:")
+    bandera_label.config(image="")
+    tree_canvas.delete("all")
 
 
 def save_file():

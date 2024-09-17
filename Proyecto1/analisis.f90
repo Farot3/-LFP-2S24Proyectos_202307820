@@ -61,7 +61,9 @@ subroutine analizar(entrada, tokens, num_tokens, errores, num_errores)
     character :: c
     character(len=1000) :: lexema_actual
     logical :: procesar_actual
-    
+    logical :: dentro_bloque
+    integer :: nivel_anidamiento
+
     estado = 0
     num_tokens = 0
     num_errores = 0
@@ -70,7 +72,9 @@ subroutine analizar(entrada, tokens, num_tokens, errores, num_errores)
     lexema_actual = ""
     inicio_lexema = 1
     inicio_col = 1
-    
+    dentro_bloque = .false.
+    nivel_anidamiento = 0
+
     indice = 1
     do while (indice <= len_trim(entrada))
         c = entrada(indice:indice)
@@ -82,6 +86,13 @@ subroutine analizar(entrada, tokens, num_tokens, errores, num_errores)
             inicio_col = columna
             if (c == '{' .or. c == '}' .or. c == ':' .or. c == ';') then
                 call agregar_token(tokens, num_tokens, c, get_token_type(c), fila, columna)
+                if (c == '{') then
+                    dentro_bloque = .true.
+                    nivel_anidamiento = nivel_anidamiento + 1
+                else if (c == '}') then
+                    nivel_anidamiento = nivel_anidamiento - 1
+                    if (nivel_anidamiento == 0) dentro_bloque = .false.
+                end if
             else if (c == '"') then
                 estado = 1
                 lexema_actual = c
@@ -123,7 +134,15 @@ subroutine analizar(entrada, tokens, num_tokens, errores, num_errores)
                 if (es_palabra_reservada(lexema_actual)) then
                     call agregar_token(tokens, num_tokens, lexema_actual, "RESERVADA", inicio_lexema, inicio_col)
                 else
-                    call agregar_token(tokens, num_tokens, lexema_actual, "IDENTIFICADOR", inicio_lexema, inicio_col)
+                    if (.not. dentro_bloque) then
+                        call agregar_error(errores, num_errores, "Palabra fuera de bloque permitido", lexema_actual, fila, columna)
+                    else
+                        if (.not. es_palabra_permitida_en_bloque(lexema_actual, nivel_anidamiento)) then
+                            call agregar_error(errores, num_errores, "Palabra no permitida dentro del bloque", lexema_actual, fila, columna)
+                        else
+                            call agregar_token(tokens, num_tokens, lexema_actual, "IDENTIFICADOR", inicio_lexema, inicio_col)
+                        end if
+                    end if
                 end if
                 estado = 0
                 procesar_actual = .false.
@@ -163,6 +182,28 @@ subroutine analizar(entrada, tokens, num_tokens, errores, num_errores)
         call agregar_error(errores, num_errores, "Cadena no cerrada al final del archivo", lexema_actual, inicio_lexema, inicio_col)
     end if
 end subroutine analizar
+
+function es_palabra_permitida_en_bloque(palabra, nivel_anidamiento) result(res)
+    character(len=*), intent(in) :: palabra
+    integer, intent(in) :: nivel_anidamiento
+    logical :: res
+
+    res = .false.
+    select case (nivel_anidamiento)
+    case (1) ! Dentro de grafica
+        if (palabra == "nombre" .or. palabra == "continente") then
+            res = .true.
+        end if
+    case (2) ! Dentro de continente
+        if (palabra == "nombre" .or. palabra == "pais") then
+            res = .true.
+        end if
+    case (3) ! Dentro de pais
+        if (palabra == "nombre" .or. palabra == "poblacion" .or. palabra == "saturacion" .or. palabra == "bandera") then
+            res = .true.
+        end if
+    end select
+end function es_palabra_permitida_en_bloque
 
 subroutine agregar_token(tokens, num_tokens, lexema, tipo, fila, columna)
     type(token), intent(inout) :: tokens(MAX_TOKENS)
