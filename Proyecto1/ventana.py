@@ -6,6 +6,7 @@ from PIL import Image, ImageTk
 # Variables globales para almacenar las rutas de los archivos
 original_file_path = None
 current_file_path = None
+tree_image = None  # Variable global para almacenar la imagen del canvas
 
 
 def load_file():
@@ -16,8 +17,6 @@ def load_file():
             content = file.read()
         output_area.delete("1.0", tk.END)
         output_area.insert(tk.END, content)
-        original_file_path = file_path
-        current_file_path = file_path
 
 
 def Enviar_Datos():
@@ -68,6 +67,9 @@ def Enviar_Datos():
             mensaje = f"Análisis completado.\nPaís seleccionado: {pais_nombre}\nPoblación: {poblacion}"
             output_area.insert(tk.END, "\n" + mensaje + "\n")
             messagebox.showinfo("Proceso completado", mensaje)
+
+            # Cargar y mostrar la imagen en el canvas
+            cargar_imagen_canvas("grafica_paises.png")
         else:
             raise Exception(
                 "No se pudo extraer la información del país seleccionado. \nRevise el archivo con errores"
@@ -128,10 +130,21 @@ def Datos_estudiantes():
     )
 
 
+def cargar_imagen_canvas(ruta_imagen):
+    global tree_image
+    try:
+        imagen = Image.open(ruta_imagen)
+        imagen = imagen.resize((700, 350), Image.Resampling.LANCZOS)
+        tree_image = ImageTk.PhotoImage(imagen)
+        tree_canvas.create_image(0, 0, anchor=tk.NW, image=tree_image)
+    except Exception as e:
+        print(f"Error al cargar la imagen en el canvas: {str(e)}")
+
+
 # Crear la ventana principal
 ventana = tk.Tk()
 ventana.title("Interfaz Tkinter con Fortran")
-ventana.geometry("800x600")
+ventana.geometry("1200x600")
 
 # Crear menú
 menu_bar = tk.Menu(
@@ -158,7 +171,7 @@ notebook = tk.Frame(ventana, bg="#262626")
 notebook.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
 tab_label = tk.Label(
-    notebook, text="Para analizar datos", relief=tk.RIDGE, bg="#333333", fg="white"
+    notebook, text="Analizador de datos", relief=tk.RIDGE, bg="#333333", fg="white"
 )
 tab_label.pack(side=tk.TOP, anchor=tk.W, pady=5)
 
@@ -192,7 +205,7 @@ label_tipo_grafica = tk.Label(
 label_tipo_grafica.pack(side=tk.TOP, pady=10)
 
 # Simulación de árbol en el canvas
-tree_canvas = tk.Canvas(right_frame, width=380, height=350, bg="#262626")
+tree_canvas = tk.Canvas(right_frame, width=700, height=350, bg="#262626")
 tree_canvas.pack(pady=10)
 
 # Información del país

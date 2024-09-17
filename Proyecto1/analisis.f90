@@ -352,7 +352,7 @@ subroutine procesar_datos(tokens, num_tokens)
     type(token), intent(in) :: tokens(MAX_TOKENS)
     integer, intent(in) :: num_tokens
     integer :: i, estado, nivel_anidamiento
-    character(len=100) :: nombre_pais, nombre_continente, nombre_grafica
+    character(len=100) :: nombre_pais, nombre_continente
     integer :: poblacion
     real :: saturacion
     character(len=200) :: bandera
@@ -360,6 +360,8 @@ subroutine procesar_datos(tokens, num_tokens)
     estado = 0
     nivel_anidamiento = 0
     grafica_actual%num_continentes = 0
+    grafica_actual%nombre = ""  ! Inicializar el nombre de la gráfica
+    
     do i = 1, num_tokens
         select case (estado)
         case (0) ! Esperando "grafica"
@@ -389,7 +391,7 @@ subroutine procesar_datos(tokens, num_tokens)
             end if
         case (4) ! Esperando nombre de la gráfica
             if (tokens(i)%tipo == "CADENA") then
-                nombre_grafica = tokens(i)%lexema(2:len_trim(tokens(i)%lexema)-1)
+                grafica_actual%nombre = tokens(i)%lexema(2:len_trim(tokens(i)%lexema)-1)
                 estado = 2
             end if
         case (10) ! Esperando "{" después de continente
@@ -553,6 +555,92 @@ function obtener_color(saturacion) result(color)
     end if
 end function obtener_color
 
+subroutine graphiv_Process(grafica_actual, continentes, num_continentes, paises, num_paises)
+    type(grafica), intent(in) :: grafica_actual
+    type(continente), intent(in) :: continentes(MAX_CONTINENTES)
+    integer, intent(in) :: num_continentes
+    type(pais), intent(in) :: paises(MAX_PAISES)
+    integer, intent(in) :: num_paises
+    
+    character(len=10000) :: dot_code
+    character(len=20) :: color
+    character(len=20) :: saturacion_str
+    character(len=100) :: nombre_grafica
+    integer :: i, j
+
+    ! Usar un nombre predeterminado si el nombre de la gráfica está vacío
+    if (len_trim(grafica_actual%nombre) == 0) then
+        nombre_grafica = "Grafica_Sin_Nombre"
+        print *, "Utilizando nombre predeterminado para la gráfica:", trim(nombre_grafica)
+    else
+        nombre_grafica = grafica_actual%nombre
+    end if
+    
+    ! Check if data is valid
+    if (num_continentes <= 0 .or. num_paises <= 0) then
+        print *, "Error: Invalid data for graph generation"
+        return
+    end if
+    
+    dot_code = "digraph G {" // new_line('A') // &
+               'rankdir=TB;' // new_line('A') // &
+               'node [shape=box, style=filled, fontname="Arial"];' // new_line('A')
+    
+    ! Add graph name (first level)
+    dot_code = trim(dot_code) // '"' // trim(nombre_grafica) // '" [shape=diamond];' // new_line('A')
+    
+    ! Add continents and countries
+    do i = 1, num_continentes
+        if (len_trim(continentes(i)%nombre) == 0) then
+            print *, "Advertencia: Nombre de continente vacío, saltando..."
+            cycle  ! Skip empty continent names
+        end if
+        
+        color = obtener_color(continentes(i)%saturacion_promedio)
+        write(saturacion_str, '(F5.1)') continentes(i)%saturacion_promedio
+        
+        ! Add continent (second level)
+        dot_code = trim(dot_code) // '"' // trim(continentes(i)%nombre) // '" [label="' // &
+                   trim(continentes(i)%nombre) // '\n' // trim(adjustl(saturacion_str)) // '%", fillcolor=' // &
+                   trim(color) // '];' // new_line('A')
+        
+        ! Connect graph name to continent
+        dot_code = trim(dot_code) // '"' // trim(nombre_grafica) // '" -> "' // &
+                   trim(continentes(i)%nombre) // '";' // new_line('A')
+        
+        ! Add countries for this continent (third level)
+        do j = 1, num_paises
+            if (len_trim(paises(j)%nombre) == 0 .or. len_trim(paises(j)%continente) == 0) then
+                print *, "Advertencia: Nombre de país o continente vacío, saltando..."
+                cycle  ! Skip empty country names or continents
+            end if
+            
+            if (trim(paises(j)%continente) == trim(continentes(i)%nombre)) then
+                color = obtener_color(paises(j)%saturacion)
+                write(saturacion_str, '(F5.1)') paises(j)%saturacion
+                
+                dot_code = trim(dot_code) // '"' // trim(paises(j)%nombre) // '" [label="' // &
+                           trim(paises(j)%nombre) // '\n' // trim(adjustl(saturacion_str)) // '%", fillcolor=' // &
+                           trim(color) // '];' // new_line('A')
+                
+                ! Connect country to its continent
+                dot_code = trim(dot_code) // '"' // trim(continentes(i)%nombre) // '" -> "' // &
+                           trim(paises(j)%nombre) // '";' // new_line('A')
+            end if
+        end do
+    end do
+    
+    dot_code = trim(dot_code) // '}' // new_line('A')
+    
+    ! Write DOT code to file
+    open(unit=11, file="grafica_paises.dot", status='replace')
+    write(11, '(A)') trim(dot_code)
+    close(11)
+    
+    ! Generate PNG image using Graphviz
+    call system("dot -Tpng grafica_paises.dot -o grafica_paises.png")
+end subroutine graphiv_Process
+
 end module analizador_lexico
 
 program main
@@ -585,6 +673,8 @@ program main
         call generar_html(tokens, num_tokens, errores, num_errores)
     else
         call procesar_datos(tokens, num_tokens)
+        call calcular_saturacion_continentes()
+        call graphiv_Process(grafica_actual, continentes, num_continentes, paises, num_paises)
         call seleccionar_pais_menor_saturacion()
         call generar_html(tokens, num_tokens, errores, num_errores)
     end if

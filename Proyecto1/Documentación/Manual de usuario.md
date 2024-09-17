@@ -53,6 +53,15 @@ En este proyecto es un sistema en la cual ayuda a los bancos en que lugar se pue
 
 
 ### Uso del programa
-Al darle ejecutar al programa se le mostrara una interfaz que es la siguiente
+Al darle ejecutar al programa en phyton se le mostrara una interfaz que es la siguiente
 
+![Una imagen de ejemplo](Interfaz.JPG)
 
+=========================================================
+
+Aquí como puede observar tiene varias cosas, en la cual tiene las diferentes opciones:
+- **Menú** : en la cual este mostrara más opciones que serían
+
+- **Entrada para el analizador de datos**: Aquí es donde se subirá el archivo con la extensión .ORG
+- **Ubicación**: Aquí es donde se mostrará la ubicación del archivo en un
+mapa.
