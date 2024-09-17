@@ -80,6 +80,7 @@ def Enviar_Datos():
         messagebox.showerror("Error", f"No se pudo ejecutar el análisis: {str(e)}")
         limpiar_labels()
 
+
 def limpiar_labels():
     pais_label.config(text="País seleccionado:")
     poblacion_label.config(text="Población:")
@@ -194,7 +195,7 @@ right_frame = tk.Frame(
 right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=5, pady=5)
 
 # Elementos en el frame izquierdo
-output_area = tk.Text(left_frame, height=25, width=40, bg="#333333", fg="white")
+output_area = tk.Text(left_frame, height=25, width=50, bg="#333333", fg="white")
 output_area.pack(pady=10)
 
 tk.Button(

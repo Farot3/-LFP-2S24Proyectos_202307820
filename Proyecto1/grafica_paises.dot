@@ -1,0 +1,22 @@
+digraph G {
+rankdir=TB;
+node [shape=box, style=filled, fontname="Arial"];
+"Tremendo" [shape=diamond];
+"Asia" [label="Asia\n71.7%", fillcolor=orange];
+"Tremendo" -> "Asia";
+"Japon" [label="Japon\n80.0%", fillcolor=red];
+"Asia" -> "Japon";
+"China" [label="China\n95.0%", fillcolor=red];
+"Asia" -> "China";
+"Korea" [label="Korea\n40.0%", fillcolor=green];
+"Asia" -> "Korea";
+"America" [label="America\n55.0%", fillcolor=yellow];
+"Tremendo" -> "America";
+"Canada" [label="Canada\n65.0%", fillcolor=orange];
+"America" -> "Canada";
+"Guatemala" [label="Guatemala\n40.0%", fillcolor=green];
+"America" -> "Guatemala";
+"Chile" [label="Chile\n60.0%", fillcolor=yellow];
+"America" -> "Chile";
+}
+

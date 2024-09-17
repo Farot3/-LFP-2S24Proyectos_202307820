@@ -55,13 +55,46 @@ En este proyecto es un sistema en la cual ayuda a los bancos en que lugar se pue
 ### Uso del programa
 Al darle ejecutar al programa en phyton se le mostrara una interfaz que es la siguiente
 
-![Una imagen de ejemplo](Interfaz.JPG)
+![Primer imagen](Interfaz.JPG)
 
 =========================================================
 
 Aquí como puede observar tiene varias cosas, en la cual tiene las diferentes opciones:
 - **Menú** : en la cual este mostrara más opciones que serían
+  - *Abrir*: que en esta parte se te abre una ventana para buscar el archivo que quieres analizar, recuerda que solo se aceptan archivos con la extensión .ORG.
 
-- **Entrada para el analizador de datos**: Aquí es donde se subirá el archivo con la extensión .ORG
-- **Ubicación**: Aquí es donde se mostrará la ubicación del archivo en un
-mapa.
+  ![Segunda imagen](Abrir.JPG)
+
+  - *Guardar*: esta opción es donde se guarda el texto, si al principio no tiene archivo para guardar, se le pone un nombre y también se escoge el lugar donde guardarlo y si ya había uno guardado en el cual se había guardado un archivo antes, solo se le da guardar se guarda automáticamente pero siempre con la extensión de .ORG.
+
+  - *Guardar como*: En esta parte est ambién para guardar el archivo, pero siempre que se le de a esta opción se guardara pero tendrás que ponerle nombre y el lugar donde quieres guardarlo, eso será siempre para esta opción y siempre se guardara con la extensión del archivo que sera .ORG.
+
+![Tercera imagen](Guardarcomo.JPG)
+
+- **Acerca de**: En esta opción se mostrará la información del creador, osea lo que se verá en la imagen
+
+![Cuarta imagen](acercade.JPG)
+
+- **Salir**: En esta opción cabal como se dice su nombre significa salir, osea que se saldra de la aplicación y la cerrara.
+
+- **Entrada para el analizador de datos**: Aquí es donde se subirá el archivo con la extensión .ORG osea el contenido o también se puede escribir lo que quieras que se analice.
+
+![Quinta imagen](consolatkinter.JPG)
+
+-**Boton analizador**: Este boton es el que se encarga de mandar la información de la entrada del analizador de datos para que se pueda analizar la información de la entrada.
+
+![Boton](botonanalizador.JPG)
+
+-**Area de gráfica**: En esta área se puede ver la gráfica que se hace al hacer al analizar los datos.
+
+![Area Gráfica](areagrafica.JPG)
+
+![Grafica](grafica.JPG)
+
+-**Area de selección**: En esta área se podrá ver el país que se selecciono y también su población con su respectiva bandera.
+
+![Area de Selección](areaseleccion.JPG)
+
+### Ejemplo del archivo .ORG tendría que ser como el siguiente para poder analizar cierto archivo:
+
+![entrada .ORG](archivoentrada.JPG)
