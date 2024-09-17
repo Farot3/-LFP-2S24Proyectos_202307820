@@ -63,7 +63,7 @@ Al darle ejecutar al programa en phyton se le mostrara una interfaz que es la si
 <br>
 
 <p align="center">
-  <img src="Interfaz.JPG" width="600" />
+  <img src="Interfaz.JPG" width="650" />
 </p>
 
 <br>
@@ -73,7 +73,7 @@ Aquí como puede observar tiene varias cosas, en la cual tiene las diferentes op
   - *Abrir*: que en esta parte se te abre una ventana para buscar el archivo que quieres analizar, recuerda que solo se aceptan archivos con la extensión .ORG.
   <br>
   <p align="center">
-    <img src="Abrir.JPG" width="600" />
+    <img src="Abrir.JPG" width="650" />
   </p>
   <br>
 
@@ -83,9 +83,7 @@ Aquí como puede observar tiene varias cosas, en la cual tiene las diferentes op
 
 <br>
 <p align="center">
-
-![Tercera imagen](Guardarcomo.JPG)
-
+  <img src="Guardarcomo.JPG" width="650" />
 </p>
 <br>
 
@@ -93,9 +91,7 @@ Aquí como puede observar tiene varias cosas, en la cual tiene las diferentes op
 
 <br>
 <p align="center">
-
-![Cuarto imagen](acerca.JPG)
-
+  <img src="acerca.JPG" width="650" />
 </p>
 <br>
 
@@ -105,26 +101,43 @@ Aquí como puede observar tiene varias cosas, en la cual tiene las diferentes op
 
 <br>
 <p align="center">
-
-![Quinta imagen](consolatkinter.JPG)
-
+  <img src="consolatkinter.JPG" width="400" />
 </p>
 <br>
 
 -**Boton analizador**: Este boton es el que se encarga de mandar la información de la entrada del analizador de datos para que se pueda analizar la información de la entrada.
 
-![Boton](botonanalizador.JPG)
+<br>
+<p align="center">
+  <img src="botonanalizador.JPG" width="100" />
+</p>
+<br>
 
 -**Area de gráfica**: En esta área se puede ver la gráfica que se hace al hacer al analizar los datos.
 
-![Area Gráfica](areagrafica.JPG)
-
-![Grafica](grafica.JPG)
+<br>
+<p align="center">
+  <img src="areagrafica.JPG" width="550" />
+</p>
+<br>
+<br>
+<p align="center">
+  <img src="grafica.JPG" width="550" />
+</p>
+<br>
 
 -**Area de selección**: En esta área se podrá ver el país que se selecciono y también su población con su respectiva bandera.
 
-![Area de Selección](areaseleccion.JPG)
+<br>
+<p align="center">
+  <img src="areaseleccion.JPG" width="550" />
+</p>
+<br>
 
 ### Ejemplo del archivo .ORG tendría que ser como el siguiente para poder analizar cierto archivo:
 
-![entrada .ORG](archivoentrada.JPG)
+<br>
+<p align="center">
+  <img src="archivoentrada.JPG" width="450" />
+</p>
+<br>
