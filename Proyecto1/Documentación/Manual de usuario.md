@@ -6,7 +6,7 @@ ESTRUCTURA DE DATOS
 
 CATEDRÁTICO: ING. DAVID
 
-=========================================================
+========================================================================
 <div style="background-image: url('logousac.png'); background-size: cover; background-position: center; height: 400px; display: flex; justify-content: center; align-items: center; text-align: center; background-color: rgba(255, 255, 255, 0.3);">
   
   <div>
@@ -14,8 +14,8 @@ CATEDRÁTICO: ING. DAVID
   </div>
   
 </div>
-=========================================================
-<p style="text-align: right;">
+========================================================================
+<p align="right">
 OTTONIEL FABRICIO VÁSQUEZ PINEDA
 <br>
 CARNÉ: 202307820
@@ -25,7 +25,7 @@ SECCIÓN B+
 
 <P align="center">GUATEMALA 19 DE SEPTIEMBRE DEL 2024</P>
 
-=========================================================
+========================================================================
 
 <h2 align="center"> Introducción </h2>
 En este proyecto es un sistema en la cual ayuda a los bancos en que lugar se puedan ubicar para ver si en ese lugar hay menos competencia de bancos y también te permitira subir archivos que tengan la extensión .ORG con la cual se podrá analizar tal archivo en que lugares hay menos saturación y trabajar mejor, no solo eso sino que al analizarlo les enseñara el pais y su población con su bandera donde hay menos saturación, también mostrará una grafica de todos los continentes con su saturación y sus paises igualmente con su saturación.
