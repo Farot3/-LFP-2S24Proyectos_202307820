@@ -7,7 +7,7 @@ ESTRUCTURA DE DATOS
 CATEDRÁTICO: ING. DAVID
 
 ============================================================================================
-<div style="background-image: url('logousac.png'); background-size: cover; background-position: center; height: 400px; display: flex; justify-content: center; align-items: center; text-align: center; background-color: rgba(255, 255, 255, 0.3);">
+<div align="center" style="background-image: url('logousac.png'); background-size: cover; background-position: center; height: 400px; display: flex; justify-content: center; align-items: center; text-align: center; background-color: rgba(255, 255, 255, 0.3);">
   
   <div>
     <h1 style="color: black; text-decoration: underline; text-decoration-color: black;" >MANUAL DE USUARIO</h1>
