@@ -73,7 +73,7 @@ Aquí como puede observar tiene varias cosas, en la cual tiene las diferentes op
 
 - **Acerca de**: En esta opción se mostrará la información del creador, osea lo que se verá en la imagen
 
-![Cuarta imagen](acercade.JPG)
+![Cuarto imagen](acerca.JPG)
 
 - **Salir**: En esta opción cabal como se dice su nombre significa salir, osea que se saldra de la aplicación y la cerrara.
 
