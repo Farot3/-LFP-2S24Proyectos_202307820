@@ -39,12 +39,12 @@ En este proyecto es un sistema en la cual ayuda a los bancos en que lugar se pue
 - Ayudar a los bancos a ubicarse en lugares con menos competencia.
 
 ### ESPECÍFICOS
-- Analizar archivos con la extensión .ORG.
-- Mostrar la ubicación del archivo en un mapa.
-- Mostrar la información del país con la menor saturación.
-- Mostrar la información del continente con la menor saturación.
-- Mostrar una gráfica de los continentes con su saturación.
-- Mostrar una gráfica de los países con su saturación.
+1. Analizar archivos con la extensión .ORG.
+2. Mostrar la ubicación del archivo en un mapa.
+3. Mostrar la información del país con la menor saturación.
+4. Mostrar la información del continente con la menor saturación.
+5. Mostrar una gráfica de los continentes con su saturación.
+6. Mostrar una gráfica de los países con su saturación.
 <br>
 <br>
 <h2 align="center"> Requisitos del sistema </h2>

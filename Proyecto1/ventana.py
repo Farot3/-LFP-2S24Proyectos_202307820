@@ -9,7 +9,7 @@ current_file_path = None
 tree_image = None  # Variable global para almacenar la imagen del canvas
 
 
-def load_file():
+def Cargar_archivo():
     global original_file_path, current_file_path
     file_path = filedialog.askopenfilename(filetypes=[("ORG files", "*.ORG")])
     if file_path:
@@ -88,7 +88,7 @@ def limpiar_labels():
     tree_canvas.delete("all")
 
 
-def save_file():
+def Guardar():
     global original_file_path
     if original_file_path:
         # Guardar en el archivo original
@@ -111,7 +111,7 @@ def save_file():
             messagebox.showinfo("Guardar como", "Archivo guardado exitosamente.")
 
 
-def save_file_as():
+def Guardar_como():
     global original_file_path, current_file_path
     file_path = filedialog.asksaveasfilename(
         defaultextension=".ORG", filetypes=[("ORG files", "*.ORG")]
@@ -125,10 +125,9 @@ def save_file_as():
         with open(file_path, "w") as file:
             file.write(content)
         messagebox.showinfo("Guardar como", "Archivo guardado exitosamente.")
-        # No actualizar original_file_path para que "Guardar" siga usando el archivo original
 
 
-def exit_app():
+def Salir():
     ventana.quit()
 
 
@@ -167,12 +166,12 @@ ventana.config(menu=menu_bar)
 menu_opciones = tk.Menu(menu_bar, tearoff=0, bg="#333333", fg="white")
 menu_bar.add_cascade(label="Menú", menu=menu_opciones)
 menu_bar.add_cascade(label="Acerca de", command=Datos_estudiantes)
-menu_bar.add_cascade(label="Salir", command=exit_app)
+menu_bar.add_cascade(label="Salir", command=Salir)
 
-menu_opciones.add_command(label="Abrir", command=load_file)
+menu_opciones.add_command(label="Abrir", command=Cargar_archivo)
 menu_opciones.add_separator()
-menu_opciones.add_command(label="Guardar", command=save_file)
-menu_opciones.add_command(label="Guardar como", command=save_file_as)
+menu_opciones.add_command(label="Guardar", command=Guardar)
+menu_opciones.add_command(label="Guardar como", command=Guardar_como)
 
 # Crear notebook
 notebook = tk.Frame(ventana, bg="#262626")
