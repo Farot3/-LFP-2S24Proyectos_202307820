@@ -63,6 +63,7 @@ subroutine analizar(entrada, tokens, num_tokens, errores, num_errores)
     logical :: procesar_actual
     logical :: dentro_bloque
     integer :: nivel_anidamiento
+    logical :: esperando_numero
 
     estado = 0
     num_tokens = 0
@@ -74,6 +75,7 @@ subroutine analizar(entrada, tokens, num_tokens, errores, num_errores)
     inicio_col = 1
     dentro_bloque = .false.
     nivel_anidamiento = 0
+    esperando_numero = .false.
 
     indice = 1
     do while (indice <= len_trim(entrada))
@@ -100,8 +102,12 @@ subroutine analizar(entrada, tokens, num_tokens, errores, num_errores)
                 estado = 2
                 lexema_actual = c
             else if (es_digito(c)) then
-                estado = 3
-                lexema_actual = c
+                if (.not. esperando_numero) then
+                    call agregar_error(errores, num_errores, "Número fuera de lugar permitido", c, fila, columna)
+                else
+                    estado = 3
+                    lexema_actual = c
+                end if
             else if (c == ' ' .or. c == char(9) .or. c == char(10)) then
                 if (c == char(10)) then
                     fila = fila + 1
@@ -133,6 +139,11 @@ subroutine analizar(entrada, tokens, num_tokens, errores, num_errores)
             else
                 if (es_palabra_reservada(lexema_actual)) then
                     call agregar_token(tokens, num_tokens, lexema_actual, "RESERVADA", inicio_lexema, inicio_col)
+                    if (lexema_actual == "poblacion" .or. lexema_actual == "saturacion") then
+                        esperando_numero = .true.
+                    else
+                        esperando_numero = .false.
+                    end if
                 else
                     if (.not. dentro_bloque) then
                         call agregar_error(errores, num_errores, "Palabra fuera de bloque permitido", lexema_actual, fila, columna)
@@ -156,10 +167,12 @@ subroutine analizar(entrada, tokens, num_tokens, errores, num_errores)
                 call agregar_token(tokens, num_tokens, lexema_actual, "PORCENTAJE", inicio_lexema, inicio_col)
                 estado = 0
                 lexema_actual = ""
+                esperando_numero = .false.
             else
                 call agregar_token(tokens, num_tokens, lexema_actual, "NUMERO", inicio_lexema, inicio_col)
                 estado = 0
                 procesar_actual = .false.
+                esperando_numero = .false.
             end if
         end select
         

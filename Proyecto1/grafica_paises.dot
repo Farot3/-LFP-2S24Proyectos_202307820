@@ -1,22 +1,22 @@
 digraph G {
 rankdir=TB;
 node [shape=box, style=filled, fontname="Arial"];
-"Tremendo" [shape=diamond];
-"Asia" [label="Asia\n71.7%", fillcolor=orange];
-"Tremendo" -> "Asia";
-"Japon" [label="Japon\n80.0%", fillcolor=red];
-"Asia" -> "Japon";
-"China" [label="China\n95.0%", fillcolor=red];
-"Asia" -> "China";
-"Korea" [label="Korea\n40.0%", fillcolor=green];
-"Asia" -> "Korea";
-"America" [label="America\n55.0%", fillcolor=yellow];
-"Tremendo" -> "America";
-"Canada" [label="Canada\n65.0%", fillcolor=orange];
-"America" -> "Canada";
-"Guatemala" [label="Guatemala\n40.0%", fillcolor=green];
-"America" -> "Guatemala";
-"Chile" [label="Chile\n60.0%", fillcolor=yellow];
-"America" -> "Chile";
+"Corto#1" [shape=diamond];
+"AmericadelNorte" [label="AmericadelNorte\n61.0%", fillcolor=orange];
+"Corto#1" -> "AmericadelNorte";
+"Canada" [label="Canada\n75.0%", fillcolor=orange];
+"AmericadelNorte" -> "Canada";
+"Mexico" [label="Mexico\n35.0%", fillcolor=green];
+"AmericadelNorte" -> "Mexico";
+"Estadosunidos" [label="Estadosunidos\n73.0%", fillcolor=orange];
+"AmericadelNorte" -> "Estadosunidos";
+"AmericadelSur" [label="AmericadelSur\n99.0%", fillcolor=red];
+"Corto#1" -> "AmericadelSur";
+"Caboverde" [label="Caboverde\n99.0%", fillcolor=red];
+"AmericadelSur" -> "Caboverde";
+"Oceania" [label="Oceania\n74.0%", fillcolor=orange];
+"Corto#1" -> "Oceania";
+"Indonesia" [label="Indonesia\n74.0%", fillcolor=orange];
+"Oceania" -> "Indonesia";
 }
 
