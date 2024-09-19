@@ -2,21 +2,21 @@ digraph G {
 rankdir=TB;
 node [shape=box, style=filled, fontname="Arial"];
 "Corto#1" [shape=diamond];
-"AmericadelNorte" [label="AmericadelNorte\n61.0%", fillcolor=orange];
-"Corto#1" -> "AmericadelNorte";
+"AmericadelNorte                                                                                     " [label="AmericadelNorte                                                                                     \n61.0%", fillcolor=orange];
+"Corto#1" -> "AmericadelNorte                                                                                     ";
 "Canada" [label="Canada\n75.0%", fillcolor=orange];
-"AmericadelNorte" -> "Canada";
+"AmericadelNorte                                                                                     " -> "Canada";
 "Mexico" [label="Mexico\n35.0%", fillcolor=green];
-"AmericadelNorte" -> "Mexico";
+"AmericadelNorte                                                                                     " -> "Mexico";
 "Estadosunidos" [label="Estadosunidos\n73.0%", fillcolor=orange];
-"AmericadelNorte" -> "Estadosunidos";
-"AmericadelSur" [label="AmericadelSur\n99.0%", fillcolor=red];
-"Corto#1" -> "AmericadelSur";
+"AmericadelNorte                                                                                     " -> "Estadosunidos";
+"AmericadelSur                                                                                       " [label="AmericadelSur                                                                                       \n99.0%", fillcolor=red];
+"Corto#1" -> "AmericadelSur                                                                                       ";
 "Caboverde" [label="Caboverde\n99.0%", fillcolor=red];
-"AmericadelSur" -> "Caboverde";
-"Oceania" [label="Oceania\n74.0%", fillcolor=orange];
-"Corto#1" -> "Oceania";
+"AmericadelSur                                                                                       " -> "Caboverde";
+"Oceania                                                                                             " [label="Oceania                                                                                             \n74.0%", fillcolor=orange];
+"Corto#1" -> "Oceania                                                                                             ";
 "Indonesia" [label="Indonesia\n74.0%", fillcolor=orange];
-"Oceania" -> "Indonesia";
+"Oceania                                                                                             " -> "Indonesia";
 }
 

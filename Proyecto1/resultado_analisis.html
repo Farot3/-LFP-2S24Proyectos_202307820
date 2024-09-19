@@ -15,18 +15,141 @@
 </head>
 <body>
     <h1>Resultado del Análisis Léxico</h1>
-    <h2>Errores Encontrados</h2>
+    <h2>Tokens Identificados</h2>
     <table>
-        <tr><th>No</th><th>Descripción</th><th>Caracter o Palabra</th><th>Fila</th><th>Columna</th></tr>
-        <tr class="error"><td>1</td><td>Palabra no permitida dentro del bloque</td><td>error</td><td>7</td><td>8</td></tr>
-        <tr class="error"><td>2</td><td>Caracter no reconocido</td><td>#</td><td>7</td><td>8</td></tr>
-        <tr class="error"><td>3</td><td>Palabra no permitida dentro del bloque</td><td>errorpais</td><td>12</td><td>12</td></tr>
-        <tr class="error"><td>4</td><td>Palabra no permitida dentro del bloque</td><td>error</td><td>29</td><td>26</td></tr>
-        <tr class="error"><td>5</td><td>Caracter no reconocido</td><td>$</td><td>29</td><td>26</td></tr>
-        <tr class="error"><td>6</td><td>Caracter no reconocido</td><td>!</td><td>34</td><td>1</td></tr>
-        <tr class="error"><td>7</td><td>Palabra no permitida dentro del bloque</td><td>sat</td><td>39</td><td>7</td></tr>
-        <tr class="error"><td>8</td><td>Letra mayúscula no permitida</td><td>U</td><td>39</td><td>7</td></tr>
-        <tr class="error"><td>9</td><td>Palabra no permitida dentro del bloque</td><td>racion</td><td>39</td><td>14</td></tr>
+        <tr><th>No</th><th>Lexema</th><th>Tipo</th><th>Fila</th><th>Columna</th></tr>
+        <tr><td>1</td><td>grafica</td><td>RESERVADA</td><td>1</td><td>1</td></tr>
+        <tr><td>2</td><td>:</td><td>DOS_PUNTOS</td><td>1</td><td>8</td></tr>
+        <tr><td>3</td><td>{</td><td>LLAVE_ABRE</td><td>1</td><td>9</td></tr>
+        <tr><td>4</td><td>nombre</td><td>RESERVADA</td><td>2</td><td>2</td></tr>
+        <tr><td>5</td><td>:</td><td>DOS_PUNTOS</td><td>2</td><td>8</td></tr>
+        <tr><td>6</td><td>"Corto#1"</td><td>CADENA</td><td>2</td><td>9</td></tr>
+        <tr><td>7</td><td>;</td><td>PUNTO_Y_COMA</td><td>2</td><td>19</td></tr>
+        <tr><td>8</td><td>continente</td><td>RESERVADA</td><td>3</td><td>2</td></tr>
+        <tr><td>9</td><td>:</td><td>DOS_PUNTOS</td><td>3</td><td>12</td></tr>
+        <tr><td>10</td><td>{</td><td>LLAVE_ABRE</td><td>3</td><td>13</td></tr>
+        <tr><td>11</td><td>nombre</td><td>RESERVADA</td><td>4</td><td>2</td></tr>
+        <tr><td>12</td><td>:</td><td>DOS_PUNTOS</td><td>4</td><td>8</td></tr>
+        <tr><td>13</td><td>"AmericadelNorte"</td><td>CADENA</td><td>4</td><td>10</td></tr>
+        <tr><td>14</td><td>;</td><td>PUNTO_Y_COMA</td><td>4</td><td>29</td></tr>
+        <tr><td>15</td><td>pais</td><td>RESERVADA</td><td>5</td><td>3</td></tr>
+        <tr><td>16</td><td>:</td><td>DOS_PUNTOS</td><td>5</td><td>7</td></tr>
+        <tr><td>17</td><td>{</td><td>LLAVE_ABRE</td><td>5</td><td>8</td></tr>
+        <tr><td>18</td><td>nombre</td><td>RESERVADA</td><td>6</td><td>3</td></tr>
+        <tr><td>19</td><td>:</td><td>DOS_PUNTOS</td><td>6</td><td>9</td></tr>
+        <tr><td>20</td><td>"Canada"</td><td>CADENA</td><td>6</td><td>10</td></tr>
+        <tr><td>21</td><td>;</td><td>PUNTO_Y_COMA</td><td>6</td><td>18</td></tr>
+        <tr><td>22</td><td>poblacion</td><td>RESERVADA</td><td>7</td><td>4</td></tr>
+        <tr><td>23</td><td>:</td><td>DOS_PUNTOS</td><td>7</td><td>13</td></tr>
+        <tr><td>24</td><td>35295</td><td>NUMERO</td><td>7</td><td>15</td></tr>
+        <tr><td>25</td><td>;</td><td>PUNTO_Y_COMA</td><td>7</td><td>20</td></tr>
+        <tr><td>26</td><td>saturacion</td><td>RESERVADA</td><td>8</td><td>4</td></tr>
+        <tr><td>27</td><td>:</td><td>DOS_PUNTOS</td><td>8</td><td>14</td></tr>
+        <tr><td>28</td><td>75%</td><td>PORCENTAJE</td><td>8</td><td>15</td></tr>
+        <tr><td>29</td><td>;</td><td>PUNTO_Y_COMA</td><td>8</td><td>18</td></tr>
+        <tr><td>30</td><td>bandera</td><td>RESERVADA</td><td>9</td><td>4</td></tr>
+        <tr><td>31</td><td>:</td><td>DOS_PUNTOS</td><td>9</td><td>11</td></tr>
+        <tr><td>32</td><td>"C:\banderas\ca.png"</td><td>CADENA</td><td>9</td><td>13</td></tr>
+        <tr><td>33</td><td>;</td><td>PUNTO_Y_COMA</td><td>9</td><td>33</td></tr>
+        <tr><td>34</td><td>}</td><td>LLAVE_CIERRA</td><td>10</td><td>3</td></tr>
+        <tr><td>35</td><td>pais</td><td>RESERVADA</td><td>11</td><td>3</td></tr>
+        <tr><td>36</td><td>:</td><td>DOS_PUNTOS</td><td>11</td><td>7</td></tr>
+        <tr><td>37</td><td>{</td><td>LLAVE_ABRE</td><td>11</td><td>8</td></tr>
+        <tr><td>38</td><td>nombre</td><td>RESERVADA</td><td>12</td><td>3</td></tr>
+        <tr><td>39</td><td>:</td><td>DOS_PUNTOS</td><td>12</td><td>9</td></tr>
+        <tr><td>40</td><td>"Mexico"</td><td>CADENA</td><td>12</td><td>10</td></tr>
+        <tr><td>41</td><td>;</td><td>PUNTO_Y_COMA</td><td>12</td><td>18</td></tr>
+        <tr><td>42</td><td>poblacion</td><td>RESERVADA</td><td>13</td><td>4</td></tr>
+        <tr><td>43</td><td>:</td><td>DOS_PUNTOS</td><td>13</td><td>13</td></tr>
+        <tr><td>44</td><td>119713</td><td>NUMERO</td><td>13</td><td>15</td></tr>
+        <tr><td>45</td><td>;</td><td>PUNTO_Y_COMA</td><td>13</td><td>21</td></tr>
+        <tr><td>46</td><td>saturacion</td><td>RESERVADA</td><td>14</td><td>4</td></tr>
+        <tr><td>47</td><td>:</td><td>DOS_PUNTOS</td><td>14</td><td>14</td></tr>
+        <tr><td>48</td><td>35%</td><td>PORCENTAJE</td><td>14</td><td>15</td></tr>
+        <tr><td>49</td><td>;</td><td>PUNTO_Y_COMA</td><td>14</td><td>18</td></tr>
+        <tr><td>50</td><td>bandera</td><td>RESERVADA</td><td>15</td><td>4</td></tr>
+        <tr><td>51</td><td>:</td><td>DOS_PUNTOS</td><td>15</td><td>11</td></tr>
+        <tr><td>52</td><td>"C:\banderas\mx.png"</td><td>CADENA</td><td>15</td><td>13</td></tr>
+        <tr><td>53</td><td>;</td><td>PUNTO_Y_COMA</td><td>15</td><td>33</td></tr>
+        <tr><td>54</td><td>}</td><td>LLAVE_CIERRA</td><td>16</td><td>3</td></tr>
+        <tr><td>55</td><td>pais</td><td>RESERVADA</td><td>17</td><td>3</td></tr>
+        <tr><td>56</td><td>:</td><td>DOS_PUNTOS</td><td>17</td><td>7</td></tr>
+        <tr><td>57</td><td>{</td><td>LLAVE_ABRE</td><td>17</td><td>8</td></tr>
+        <tr><td>58</td><td>nombre</td><td>RESERVADA</td><td>18</td><td>3</td></tr>
+        <tr><td>59</td><td>:</td><td>DOS_PUNTOS</td><td>18</td><td>9</td></tr>
+        <tr><td>60</td><td>"Estadosunidos"</td><td>CADENA</td><td>18</td><td>10</td></tr>
+        <tr><td>61</td><td>;</td><td>PUNTO_Y_COMA</td><td>18</td><td>26</td></tr>
+        <tr><td>62</td><td>poblacion</td><td>RESERVADA</td><td>19</td><td>4</td></tr>
+        <tr><td>63</td><td>:</td><td>DOS_PUNTOS</td><td>19</td><td>13</td></tr>
+        <tr><td>64</td><td>512300</td><td>NUMERO</td><td>19</td><td>15</td></tr>
+        <tr><td>65</td><td>;</td><td>PUNTO_Y_COMA</td><td>19</td><td>21</td></tr>
+        <tr><td>66</td><td>saturacion</td><td>RESERVADA</td><td>20</td><td>4</td></tr>
+        <tr><td>67</td><td>:</td><td>DOS_PUNTOS</td><td>20</td><td>14</td></tr>
+        <tr><td>68</td><td>73%</td><td>PORCENTAJE</td><td>20</td><td>15</td></tr>
+        <tr><td>69</td><td>;</td><td>PUNTO_Y_COMA</td><td>20</td><td>18</td></tr>
+        <tr><td>70</td><td>bandera</td><td>RESERVADA</td><td>21</td><td>4</td></tr>
+        <tr><td>71</td><td>:</td><td>DOS_PUNTOS</td><td>21</td><td>11</td></tr>
+        <tr><td>72</td><td>"C:\banderas\us.png"</td><td>CADENA</td><td>21</td><td>13</td></tr>
+        <tr><td>73</td><td>;</td><td>PUNTO_Y_COMA</td><td>21</td><td>33</td></tr>
+        <tr><td>74</td><td>}</td><td>LLAVE_CIERRA</td><td>22</td><td>3</td></tr>
+        <tr><td>75</td><td>}</td><td>LLAVE_CIERRA</td><td>23</td><td>2</td></tr>
+        <tr><td>76</td><td>continente</td><td>RESERVADA</td><td>24</td><td>2</td></tr>
+        <tr><td>77</td><td>:</td><td>DOS_PUNTOS</td><td>24</td><td>12</td></tr>
+        <tr><td>78</td><td>{</td><td>LLAVE_ABRE</td><td>24</td><td>13</td></tr>
+        <tr><td>79</td><td>nombre</td><td>RESERVADA</td><td>25</td><td>2</td></tr>
+        <tr><td>80</td><td>:</td><td>DOS_PUNTOS</td><td>25</td><td>8</td></tr>
+        <tr><td>81</td><td>"AmericadelSur"</td><td>CADENA</td><td>25</td><td>10</td></tr>
+        <tr><td>82</td><td>;</td><td>PUNTO_Y_COMA</td><td>25</td><td>27</td></tr>
+        <tr><td>83</td><td>pais</td><td>RESERVADA</td><td>26</td><td>3</td></tr>
+        <tr><td>84</td><td>:</td><td>DOS_PUNTOS</td><td>26</td><td>7</td></tr>
+        <tr><td>85</td><td>{</td><td>LLAVE_ABRE</td><td>26</td><td>8</td></tr>
+        <tr><td>86</td><td>nombre</td><td>RESERVADA</td><td>27</td><td>4</td></tr>
+        <tr><td>87</td><td>:</td><td>DOS_PUNTOS</td><td>27</td><td>10</td></tr>
+        <tr><td>88</td><td>"Caboverde"</td><td>CADENA</td><td>27</td><td>11</td></tr>
+        <tr><td>89</td><td>;</td><td>PUNTO_Y_COMA</td><td>27</td><td>23</td></tr>
+        <tr><td>90</td><td>poblacion</td><td>RESERVADA</td><td>28</td><td>4</td></tr>
+        <tr><td>91</td><td>:</td><td>DOS_PUNTOS</td><td>28</td><td>13</td></tr>
+        <tr><td>92</td><td>35000</td><td>NUMERO</td><td>28</td><td>15</td></tr>
+        <tr><td>93</td><td>;</td><td>PUNTO_Y_COMA</td><td>28</td><td>20</td></tr>
+        <tr><td>94</td><td>saturacion</td><td>RESERVADA</td><td>29</td><td>4</td></tr>
+        <tr><td>95</td><td>:</td><td>DOS_PUNTOS</td><td>29</td><td>14</td></tr>
+        <tr><td>96</td><td>99%</td><td>PORCENTAJE</td><td>29</td><td>15</td></tr>
+        <tr><td>97</td><td>;</td><td>PUNTO_Y_COMA</td><td>29</td><td>18</td></tr>
+        <tr><td>98</td><td>bandera</td><td>RESERVADA</td><td>30</td><td>4</td></tr>
+        <tr><td>99</td><td>:</td><td>DOS_PUNTOS</td><td>30</td><td>11</td></tr>
+        <tr><td>100</td><td>"C:\banderas\cv.png"</td><td>CADENA</td><td>30</td><td>13</td></tr>
+        <tr><td>101</td><td>;</td><td>PUNTO_Y_COMA</td><td>30</td><td>33</td></tr>
+        <tr><td>102</td><td>}</td><td>LLAVE_CIERRA</td><td>31</td><td>3</td></tr>
+        <tr><td>103</td><td>}</td><td>LLAVE_CIERRA</td><td>32</td><td>2</td></tr>
+        <tr><td>104</td><td>continente</td><td>RESERVADA</td><td>33</td><td>2</td></tr>
+        <tr><td>105</td><td>:</td><td>DOS_PUNTOS</td><td>33</td><td>12</td></tr>
+        <tr><td>106</td><td>{</td><td>LLAVE_ABRE</td><td>33</td><td>13</td></tr>
+        <tr><td>107</td><td>nombre</td><td>RESERVADA</td><td>34</td><td>2</td></tr>
+        <tr><td>108</td><td>:</td><td>DOS_PUNTOS</td><td>34</td><td>8</td></tr>
+        <tr><td>109</td><td>"Oceania"</td><td>CADENA</td><td>34</td><td>10</td></tr>
+        <tr><td>110</td><td>;</td><td>PUNTO_Y_COMA</td><td>34</td><td>19</td></tr>
+        <tr><td>111</td><td>pais</td><td>RESERVADA</td><td>35</td><td>3</td></tr>
+        <tr><td>112</td><td>:</td><td>DOS_PUNTOS</td><td>35</td><td>7</td></tr>
+        <tr><td>113</td><td>{</td><td>LLAVE_ABRE</td><td>35</td><td>8</td></tr>
+        <tr><td>114</td><td>nombre</td><td>RESERVADA</td><td>36</td><td>4</td></tr>
+        <tr><td>115</td><td>:</td><td>DOS_PUNTOS</td><td>36</td><td>10</td></tr>
+        <tr><td>116</td><td>"Indonesia"</td><td>CADENA</td><td>36</td><td>11</td></tr>
+        <tr><td>117</td><td>;</td><td>PUNTO_Y_COMA</td><td>36</td><td>22</td></tr>
+        <tr><td>118</td><td>poblacion</td><td>RESERVADA</td><td>37</td><td>4</td></tr>
+        <tr><td>119</td><td>:</td><td>DOS_PUNTOS</td><td>37</td><td>13</td></tr>
+        <tr><td>120</td><td>55000</td><td>NUMERO</td><td>37</td><td>15</td></tr>
+        <tr><td>121</td><td>;</td><td>PUNTO_Y_COMA</td><td>37</td><td>20</td></tr>
+        <tr><td>122</td><td>saturacion</td><td>RESERVADA</td><td>38</td><td>4</td></tr>
+        <tr><td>123</td><td>:</td><td>DOS_PUNTOS</td><td>38</td><td>14</td></tr>
+        <tr><td>124</td><td>74%</td><td>PORCENTAJE</td><td>38</td><td>15</td></tr>
+        <tr><td>125</td><td>;</td><td>PUNTO_Y_COMA</td><td>38</td><td>18</td></tr>
+        <tr><td>126</td><td>bandera</td><td>RESERVADA</td><td>39</td><td>4</td></tr>
+        <tr><td>127</td><td>:</td><td>DOS_PUNTOS</td><td>39</td><td>11</td></tr>
+        <tr><td>128</td><td>"C:\banderas\mc.png"</td><td>CADENA</td><td>39</td><td>13</td></tr>
+        <tr><td>129</td><td>;</td><td>PUNTO_Y_COMA</td><td>39</td><td>33</td></tr>
+        <tr><td>130</td><td>}</td><td>LLAVE_CIERRA</td><td>40</td><td>3</td></tr>
+        <tr><td>131</td><td>}</td><td>LLAVE_CIERRA</td><td>41</td><td>2</td></tr>
+        <tr><td>132</td><td>}</td><td>LLAVE_CIERRA</td><td>42</td><td>1</td></tr>
     </table>
 </body>
 </html>

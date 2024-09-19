@@ -39,8 +39,6 @@ def Enviar_Datos():
             raise Exception(f"Error en Fortran: {resultado.stderr}")
 
         output = resultado.stdout.strip()
-        print("Depuración: Salida del programa Fortran:")
-        print(output)
 
         # Procesar la salida para dividirla en partes
         partes = output.split(",")
@@ -65,7 +63,6 @@ def Enviar_Datos():
                 bandera_label.config(image="")
 
             mensaje = f"Análisis completado.\nPaís seleccionado: {pais_nombre}\nPoblación: {poblacion}"
-            output_area.insert(tk.END, "\n" + mensaje + "\n")
             messagebox.showinfo("Proceso completado", mensaje)
 
             # Cargar y mostrar la imagen en el canvas
