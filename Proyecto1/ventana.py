@@ -138,7 +138,7 @@ def cargar_imagen_canvas(ruta_imagen):
     global tree_image
     try:
         imagen = Image.open(ruta_imagen)
-        imagen = imagen.resize((700, 350), Image.Resampling.LANCZOS)
+        imagen = imagen.resize((1000, 350), Image.Resampling.LANCZOS)
         tree_image = ImageTk.PhotoImage(imagen)
         tree_canvas.create_image(0, 0, anchor=tk.NW, image=tree_image)
     except Exception as e:
@@ -148,7 +148,7 @@ def cargar_imagen_canvas(ruta_imagen):
 # Crear la ventana principal
 ventana = tk.Tk()
 ventana.title("Interfaz Tkinter con Fortran")
-ventana.geometry("1200x600")
+ventana.geometry("1450x600")
 
 # Crear menú
 menu_bar = tk.Menu(
@@ -186,12 +186,12 @@ left_frame = tk.Frame(
 left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=5, pady=5)
 
 right_frame = tk.Frame(
-    notebook, width=400, height=500, relief=tk.SUNKEN, bd=1, bg="#1a1a1a"
+    notebook, width=200, height=500, relief=tk.SUNKEN, bd=1, bg="#1a1a1a"
 )
 right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=5, pady=5)
 
 # Elementos en el frame izquierdo
-output_area = tk.Text(left_frame, height=25, width=50, bg="#333333", fg="white")
+output_area = tk.Text(left_frame, height=25, width=35, bg="#333333", fg="white")
 output_area.pack(pady=10)
 
 tk.Button(
@@ -209,7 +209,7 @@ label_tipo_grafica = tk.Label(
 label_tipo_grafica.pack(side=tk.TOP, pady=10)
 
 # Simulación de árbol en el canvas
-tree_canvas = tk.Canvas(right_frame, width=700, height=350, bg="#262626")
+tree_canvas = tk.Canvas(right_frame, width=1000, height=350, bg="#262626")
 tree_canvas.pack(pady=10)
 
 # Información del país

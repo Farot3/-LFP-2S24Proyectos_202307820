@@ -20,6 +20,18 @@ grafica: {
                         nombre:"Korea";
                         bandera: "C:\imagen.jpg";
                 }
+                pais: {
+                        saturacion:87%;
+                        poblacion: 248202;
+                        nombre:"Isarel";
+                        bandera: "C:\imagen.jpg";
+                }
+                pais: {
+                        bandera: "C:\imagen.jpg";
+                        nombre: "Japon";
+                        poblacion: 1350018020;
+                        saturacion:73%;
+                }
         }
         continente { 
         nombre: "America";
@@ -39,6 +51,69 @@ grafica: {
                         saturacion:60%;
                         nombre:"Chile";
                         poblacion: 235234234;
+                        bandera: "C:\imagen.jpg"
+                }
+        }
+        continente { 
+        nombre: "Africa";
+                pais: {
+                        nombre: "Egipto";
+                        poblacion: 2348793;
+                        saturacion:85%;
+                        bandera: "C:\imagen.jpg"
+                }
+                pais: {
+                        poblacion: 17264751;
+                        nombre: "Etiopia";
+                        saturacion:20%;
+                        bandera: "C:\guate.jpg"
+                }
+                pais: {
+                        saturacion:20%;
+                        nombre:"Nigeria";
+                        poblacion: 235234234;
+                        bandera: "C:\imagen.jpg"
+                }
+        }
+        continente { 
+        nombre: "Europa";
+                pais: {
+                        nombre: "Italia";
+                        poblacion: 23157793;
+                        saturacion:25%;
+                        bandera: "C:\imagen.jpg"
+                }
+                pais: {
+                        poblacion: 12374751;
+                        nombre: "Noruega";
+                        saturacion:20%;
+                        bandera: "C:\guate.jpg"
+                }
+                pais: {
+                        saturacion:40%;
+                        nombre:"Polonia";
+                        poblacion: 235234234;
+                        bandera: "C:\imagen.jpg"
+                }
+        }
+        continente { 
+        nombre: "Oceania";
+                pais: {
+                        nombre: "Nueva Zelanda";
+                        poblacion: 24597793;
+                        saturacion:35%;
+                        bandera: "C:\imagen.jpg"
+                }
+                pais: {
+                        poblacion: 12672751;
+                        nombre: "Australia";
+                        saturacion:50%;
+                        bandera: "C:\guate.jpg"
+                }
+                pais: {
+                        saturacion:35%;
+                        nombre:"Samoa";
+                        poblacion: 2352234;
                         bandera: "C:\imagen.jpg"
                 }
         }
