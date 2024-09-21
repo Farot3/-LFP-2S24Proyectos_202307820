@@ -65,7 +65,7 @@ def Enviar_Datos():
             mensaje = f"Análisis completado.\nPaís seleccionado: {pais_nombre}\nPoblación: {poblacion}"
             messagebox.showinfo("Proceso completado", mensaje)
 
-            # Cargar y mostrar la imagen en el canvas
+            # Cargar y mostrard la imagen en el canvas
             cargar_imagen_canvas("grafica_paises.png")
         else:
             raise Exception(

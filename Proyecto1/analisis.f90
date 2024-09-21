@@ -116,7 +116,11 @@ subroutine analizar(entrada, tokens, num_tokens, errores, num_errores)
         case (1) ! Estado para cadenas
             lexema_actual = trim(lexema_actual) // c
             if (c == '"' .and. lexema_actual(len_trim(lexema_actual)-1:len_trim(lexema_actual)-1) /= '\') then
-                call agregar_token(tokens, num_tokens, lexema_actual, "CADENA", inicio_lexema, inicio_col)
+                if (len_trim(lexema_actual) == 2) then
+                    call agregar_error(errores, num_errores, "Cadena vacía no permitida", lexema_actual, inicio_lexema, inicio_col)
+                else
+                    call agregar_token(tokens, num_tokens, lexema_actual, "CADENA", inicio_lexema, inicio_col)
+                end if
                 estado = 0
                 lexema_actual = ""
             else if (c == char(10)) then

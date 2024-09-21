@@ -201,7 +201,7 @@ def cargar_imagen_canvas(ruta_imagen):
     global tree_image
     try:
         imagen = Image.open(ruta_imagen)
-        imagen = imagen.resize((700, 350), Image.Resampling.LANCZOS)
+        imagen = imagen.resize((900, 350), Image.Resampling.LANCZOS)
         tree_image = ImageTk.PhotoImage(imagen)
         tree_canvas.create_image(0, 0, anchor=tk.NW, image=tree_image)
     except Exception as e:
@@ -250,11 +250,11 @@ left_frame = tk.Frame(
 left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=5, pady=5)
 
 right_frame = tk.Frame(
-    notebook, width=400, height=500, relief=tk.SUNKEN, bd=1, bg="#1a1a1a"
+    notebook, width=200, height=500, relief=tk.SUNKEN, bd=1, bg="#1a1a1a"
 )
 right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=5, pady=5)
 
-output_area = tk.Text(left_frame, height=25, width=50, bg="#333333", fg="white")
+output_area = tk.Text(left_frame, height=25, width=35, bg="#333333", fg="white")
 output_area.pack(pady=10)
 
 tk.Button(
@@ -270,7 +270,7 @@ label_tipo_grafica = tk.Label(
 )
 label_tipo_grafica.pack(side=tk.TOP, pady=10)
 
-tree_canvas = tk.Canvas(right_frame, width=700, height=350, bg="#262626")
+tree_canvas = tk.Canvas(right_frame, width=900, height=350, bg="#262626")
 tree_canvas.pack(pady=10)
 
 info_frame = tk.Frame(right_frame, bg="#1a1a1a")
@@ -294,8 +294,15 @@ bandera_label.pack(side=tk.RIGHT, padx=20)
 
 ventana.mainloop()
 ~~~
+<br>
+<br>
+<h1 align="center"> Método del arbol</h1>
+<p align="center">
+  <img src="Arbol.drawio.png" width="650" />
+</p>
 
-
+<br>
+<br>
 <h1 align="center"> Backend </h1>
 En esta parte se trabajo con Fortran en la cual se explicaran algunas funciones pero no todas, más que todos las importantes y un poco de texto para que se pueda entender que hace cada función, ya que para hacer este analizador se hicieron varias funciones.
 
@@ -373,7 +380,6 @@ subroutine analizar(entrada, tokens, num_tokens, errores, num_errores)
     logical :: procesar_actual
     logical :: dentro_bloque
     integer :: nivel_anidamiento
-    logical :: esperando_numero
 
     estado = 0
     num_tokens = 0
@@ -385,7 +391,6 @@ subroutine analizar(entrada, tokens, num_tokens, errores, num_errores)
     inicio_col = 1
     dentro_bloque = .false.
     nivel_anidamiento = 0
-    esperando_numero = .false.
 
     indice = 1
     do while (indice <= len_trim(entrada))
@@ -412,12 +417,8 @@ subroutine analizar(entrada, tokens, num_tokens, errores, num_errores)
                 estado = 2
                 lexema_actual = c
             else if (es_digito(c)) then
-                if (.not. esperando_numero) then
-                    call agregar_error(errores, num_errores, "Número fuera de lugar permitido", c, fila, columna)
-                else
-                    estado = 3
-                    lexema_actual = c
-                end if
+                estado = 3
+                lexema_actual = c
             else if (c == ' ' .or. c == char(9) .or. c == char(10)) then
                 if (c == char(10)) then
                     fila = fila + 1
@@ -432,7 +433,11 @@ subroutine analizar(entrada, tokens, num_tokens, errores, num_errores)
         case (1)
             lexema_actual = trim(lexema_actual) // c
             if (c == '"' .and. lexema_actual(len_trim(lexema_actual)-1:len_trim(lexema_actual)-1) /= '\/') then
-                call agregar_token(tokens, num_tokens, lexema_actual, "CADENA", inicio_lexema, inicio_col)
+                if (len_trim(lexema_actual) == 2) then
+                    call agregar_error(errores, num_errores, "Cadena vacía no permitida", lexema_actual, inicio_lexema, inicio_col)
+                else
+                    call agregar_token(tokens, num_tokens, lexema_actual, "CADENA", inicio_lexema, inicio_col)
+                end if
                 estado = 0
                 lexema_actual = ""
             else if (c == char(10)) then
@@ -443,17 +448,12 @@ subroutine analizar(entrada, tokens, num_tokens, errores, num_errores)
                 columna = 0
             end if
             
-        case (2) reservadas
+        case (2)
             if (es_letra_minuscula(c) .or. es_digito(c) .or. c == '_') then
                 lexema_actual = trim(lexema_actual) // c
             else
                 if (es_palabra_reservada(lexema_actual)) then
                     call agregar_token(tokens, num_tokens, lexema_actual, "RESERVADA", inicio_lexema, inicio_col)
-                    if (lexema_actual == "poblacion" .or. lexema_actual == "saturacion") then
-                        esperando_numero = .true.
-                    else
-                        esperando_numero = .false.
-                    end if
                 else
                     if (.not. dentro_bloque) then
                         call agregar_error(errores, num_errores, "Palabra fuera de bloque permitido", lexema_actual, fila, columna)
@@ -477,12 +477,10 @@ subroutine analizar(entrada, tokens, num_tokens, errores, num_errores)
                 call agregar_token(tokens, num_tokens, lexema_actual, "PORCENTAJE", inicio_lexema, inicio_col)
                 estado = 0
                 lexema_actual = ""
-                esperando_numero = .false.
             else
                 call agregar_token(tokens, num_tokens, lexema_actual, "NUMERO", inicio_lexema, inicio_col)
                 estado = 0
                 procesar_actual = .false.
-                esperando_numero = .false.
             end if
         end select
         
