@@ -186,6 +186,7 @@ subroutine analizar(entrada, tokens, num_tokens, errores, num_errores)
         call agregar_error(errores, num_errores, "Cadena no cerrada al final del archivo", lexema_actual, inicio_lexema, inicio_col)
     end if
 end subroutine analizar
+    
 function es_palabra_permitida_en_bloque(palabra, nivel_anidamiento) result(res)
     character(len=*), intent(in) :: palabra
     integer, intent(in) :: nivel_anidamiento
