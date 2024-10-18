@@ -1,6 +1,7 @@
 import subprocess
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
+import webbrowser
 
 original_file_path = None
 current_file_path = None
@@ -14,7 +15,7 @@ def Enviar_Datos():
 
     try:
         resultado = subprocess.run(
-            ["./analisis.exe"],
+            ["./programa.exe"],
             input=content,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -26,8 +27,6 @@ def Enviar_Datos():
             raise Exception(f"Error en Fortran: {resultado.stderr}")
 
         output = resultado.stdout.strip()
-        print("Output del análisis:")  # Imprimir en la consola para depuración
-        print(output)  # Imprimir en la consola depuración
 
         # Procesar el resultado del análisis
         tokens = []
@@ -43,11 +42,14 @@ def Enviar_Datos():
                     fila = int(parts[3].strip())
                     columna = int(parts[4].strip())
                     tokens.append((tipo, lexema, fila, columna))
-                    print(
-                        f"Token encontrado: {tokens[-1]}"
-                    )  # Imprimir token encontrado
                 else:
                     print(f"Línea de token malformada: {line}")
+                    # Agregar el token malformado a la lista de tokens
+                    tipo = parts[1].strip() if len(parts) > 1 else "DESCONOCIDO"
+                    lexema = parts[2].strip() if len(parts) > 2 else "DESCONOCIDO"
+                    fila = int(parts[3].strip()) if len(parts) > 3 else 0
+                    columna = int(parts[4].strip()) if len(parts) > 4 else 0
+                    tokens.append((tipo, lexema, fila, columna))
             elif line.startswith("ERROR"):
                 parts = line.split("|")
                 if len(parts) >= 6:
@@ -57,11 +59,15 @@ def Enviar_Datos():
                     fila = int(parts[4].strip())
                     columna = int(parts[5].strip())
                     errores.append((tipo, fila, columna, token, descripcion))
-                    print(
-                        f"Error encontrado: {errores[-1]}"
-                    )  # Imprimir error encontrado
                 else:
                     print(f"Línea de error malformada: {line}")
+                    # Agregar el error malformado a la lista de errores
+                    tipo = parts[1].strip() if len(parts) > 1 else "DESCONOCIDO"
+                    descripcion = parts[2].strip() if len(parts) > 2 else "DESCONOCIDO"
+                    token = parts[3].strip() if len(parts) > 3 else "DESCONOCIDO"
+                    fila = int(parts[4].strip()) if len(parts) > 4 else 0
+                    columna = int(parts[5].strip()) if len(parts) > 5 else 0
+                    errores.append((tipo, fila, columna, token, descripcion))
 
         print(f"Total de tokens encontrados: {len(tokens)}")
         print(f"Total de errores encontrados: {len(errores)}")
@@ -78,34 +84,36 @@ def Enviar_Datos():
 def mostrar_tokens(tokens):
     limpiar_tabla()
     tabla.configure(columns=("ID", "Tipo", "Lexema", "Fila", "Columna"))
-    tabla.heading("ID", text="ID")
-    tabla.heading("Tipo", text="Tipo de Token")
-    tabla.heading("Lexema", text="Lexema")
-    tabla.heading("Fila", text="Fila")
-    tabla.heading("Columna", text="Columna")
+    tabla.heading("ID", text="ID", anchor="w")
+    tabla.heading("Tipo", text="Tipo de Token", anchor="w")
+    tabla.heading("Lexema", text="Lexema", anchor="w")
+    tabla.heading("Fila", text="Fila", anchor="w")
+    tabla.heading("Columna", text="Columna", anchor="w")
 
     for idx, token in enumerate(tokens, start=1):
         print(
             f"Insertando token en la tabla: {token}"
         )  # Imprimir token antes de insertar
-        tabla.insert("", "end", values=(idx, *token))
+        tabla.insert("", "end", values=(idx, token[0], token[1], token[2], token[3]))
 
 
 def mostrar_errores(errores):
     limpiar_tabla()
     tabla.configure(columns=("ID", "Tipo", "Fila", "Columna", "Token", "Descripción"))
-    tabla.heading("ID", text="ID")
-    tabla.heading("Tipo", text="Tipo de Error")
-    tabla.heading("Fila", text="Fila")
-    tabla.heading("Columna", text="Columna")
-    tabla.heading("Token", text="Token")
-    tabla.heading("Descripción", text="Descripción")
+    tabla.heading("ID", text="ID", anchor="w")
+    tabla.heading("Tipo", text="Tipo de Error", anchor="w")
+    tabla.heading("Fila", text="Fila", anchor="w")
+    tabla.heading("Columna", text="Columna", anchor="w")
+    tabla.heading("Token", text="Token", anchor="w")
+    tabla.heading("Descripción", text="Descripción", anchor="w")
 
     for idx, error in enumerate(errores, start=1):
         print(
             f"Insertando error en la tabla: {error}"
         )  # Imprimir error antes de insertar
-        tabla.insert("", "end", values=(idx, *error))
+        tabla.insert(
+            "", "end", values=(idx, error[0], error[1], error[2], error[3], error[4])
+        )
 
 
 def limpiar_tabla():
@@ -174,6 +182,18 @@ def Salir():
     ventana.quit()
 
 
+def Abrir_archivo():
+    file_path = "resultado_analisis.html"
+    try:
+        webbrowser.open_new_tab(file_path)
+        messagebox.showinfo(
+            "Abrir archivo",
+            f"Archivo {file_path} abierto exitosamente en el navegador.",
+        )
+    except Exception as e:
+        messagebox.showerror("Error", f"No se pudo abrir el archivo: {str(e)}")
+
+
 # Crear la ventana principal
 ventana = tk.Tk()
 ventana.title("Interfaz Tkinter con Fortran")
@@ -192,7 +212,7 @@ ventana.config(menu=menu_bar)
 menu_opciones = tk.Menu(menu_bar, tearoff=0, bg="#333333", fg="white")
 menu_bar.add_cascade(label="Archivo", menu=menu_opciones)
 menu_bar.add_cascade(label="Analisis", command=Enviar_Datos)
-menu_bar.add_cascade(label="Tokens")
+menu_bar.add_cascade(label="Tokens", command=Abrir_archivo)
 
 menu_opciones.add_command(label="Nuevo")
 menu_opciones.add_command(label="Abrir", command=Cargar_archivo)
@@ -212,7 +232,7 @@ left_frame = tk.Frame(
 )
 left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=5, pady=5)
 
-right_frame = tk.Frame(ventana, width=700, height=500)
+right_frame = tk.Frame(ventana, width=500, height=500)
 right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=5, pady=5)
 
 # Crear un frame para el output_area y el label
@@ -239,20 +259,24 @@ output_area.bind("<ButtonRelease>", update_cursor_position)
 
 # Crear tabla en el frame derecho
 tabla = ttk.Treeview(right_frame)
-tabla.pack(fill=tk.BOTH, expand=True)
+tabla.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
 # Configurar columnas y encabezados predeterminados
 tabla.configure(columns=("ID", "Tipo", "Lexema", "Fila", "Columna"))
-tabla.heading("ID", text="ID")
-tabla.heading("Tipo", text="Tipo de Token")
-tabla.heading("Lexema", text="Lexema")
-tabla.heading("Fila", text="Fila")
-tabla.heading("Columna", text="Columna")
+tabla.heading("ID", text="ID", anchor="w")
+tabla.heading("Tipo", text="Tipo de Token", anchor="w")
+tabla.heading("Lexema", text="Lexema", anchor="w")
+tabla.heading("Fila", text="Fila", anchor="w")
+tabla.heading("Columna", text="Columna", anchor="w")
 
-# Configurar scrollbar para la tabla
-scrollbar = ttk.Scrollbar(right_frame, orient="vertical", command=tabla.yview)
-scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-tabla.configure(yscrollcommand=scrollbar.set)
+# Configurar scrollbars para la tabla
+scrollbar_y = ttk.Scrollbar(right_frame, orient="vertical", command=tabla.yview)
+scrollbar_y.pack(side=tk.RIGHT, fill=tk.Y)
+tabla.configure(yscrollcommand=scrollbar_y.set)
+
+scrollbar_x = ttk.Scrollbar(right_frame, orient="horizontal", command=tabla.xview)
+scrollbar_x.pack(side=tk.BOTTOM, fill=tk.X)
+tabla.configure(xscrollcommand=scrollbar_x.set)
 
 # Ejecutar la ventana
 ventana.mainloop()
