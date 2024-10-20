@@ -39,10 +39,11 @@ contains
         ! Variable que representa la lista de tokens
         type(token1), dimension(:), allocatable, intent(out) :: listaTokens
         ! Variable que representa el estado actual
-        integer :: i, estado, length, fila, columna
+        integer :: i, estado, length, fila, columna, inicio_lexema, inicio_col
         character(len=1) :: c
         ! Variable que representa el lexema que actualmente se esta acumulando
         character(len=100) :: auxLex
+        logical :: procesar_actual
     
         ! Inicialización
         length = len_trim(entrada)
@@ -51,6 +52,8 @@ contains
         i = 0
         fila = 1
         columna = 1
+        inicio_lexema = 1
+        inicio_col = 1
         allocate(listaTokens(0)) ! Inicializar el array de tokens vacío
     
         ! Le agrego caracter de fin de cadena porque hay lexemas que aceptan con 
@@ -63,10 +66,13 @@ contains
         do while (i <= length)
             i = i + 1
             c = entrada(i:i)
+            procesar_actual = .true.
     
             ! Select en el que cada caso representa cada uno de los estados del conjunto de estados
             select case (estado)
             case (0)
+                inicio_lexema = fila
+                inicio_col = columna
                 if (c >= '0' .and. c <= '9') then
                     estado = 1
                     auxLex = trim(auxLex) // c
@@ -79,15 +85,6 @@ contains
                 else if (is_letter(c)) then
                     estado = 2
                     auxLex = c      
-                else if (c == '{') then
-                    auxLex = c
-                    call addToken(LLAVE_ABRE, auxLex, fila, columna, listaTokens)
-                else if (c == '}') then
-                    auxLex = c
-                    call addToken(LLAVE_CIERRA, auxLex, fila, columna, listaTokens)
-                else if (c == ':') then
-                    auxLex = c
-                    call addToken(DOS_PUNTOS, auxLex, fila, columna, listaTokens)
                 else if (c == ';') then
                     auxLex = c
                     call addToken(PUNTO_Y_COMA, auxLex, fila, columna, listaTokens)
@@ -121,6 +118,7 @@ contains
                 else if (c == char(10)) then
                     fila = fila + 1
                     columna = 1
+                    procesar_actual = .false.
                 else
                     estado = 0
                 end if
@@ -132,60 +130,72 @@ contains
                     call addToken(NUMERO, auxLex, fila, columna, listaTokens)
                     i = i - 1
                     estado = 0
+                    procesar_actual = .false.
                 end if
             case (2) ! Estado para identificadores o palabras reservadas
                 if (is_letter(c) .or. is_digit(c) .or. c == '_') then
                     auxLex = trim(auxLex) // c
                 else
                     if (trim(auxLex) == "Contenedor") then
-                        call addToken(Palabra_clave, auxLex, fila, columna, listaTokens)
+                        call addToken(Palabra_clave, auxLex, inicio_lexema, inicio_col, listaTokens)
                     else if (trim(auxLex) == "Texto") then
-                        call addToken(Palabra_clave, auxLex, fila, columna, listaTokens)
+                        call addToken(Palabra_clave, auxLex, inicio_lexema, inicio_col, listaTokens)
                     else if (trim(auxLex) == "Clave") then
-                        call addToken(Palabra_clave, auxLex, fila, columna, listaTokens)
+                        call addToken(Palabra_clave, auxLex, inicio_lexema, inicio_col, listaTokens)
                     else if (trim(auxLex) == "Boton") then
-                        call addToken(Palabra_clave, auxLex, fila, columna, listaTokens)
+                        call addToken(Palabra_clave, auxLex, inicio_lexema, inicio_col, listaTokens)
                     else if (trim(auxLex) == "Check") then
-                        call addToken(Palabra_clave, auxLex, fila, columna, listaTokens)
+                        call addToken(Palabra_clave, auxLex, inicio_lexema, inicio_col, listaTokens)
                     else if (trim(auxLex) == "RadioBoton") then
-                        call addToken(Palabra_clave, auxLex, fila, columna, listaTokens)
+                        call addToken(Palabra_clave, auxLex, inicio_lexema, inicio_col, listaTokens)
                     else if (trim(auxLex) == "AreaTexto") then
-                        call addToken(Palabra_clave, auxLex, fila, columna, listaTokens)
+                        call addToken(Palabra_clave, auxLex, inicio_lexema, inicio_col, listaTokens)
                     else if (trim(auxLex) == "Etiqueta") then
-                        call addToken(Palabra_clave, auxLex, fila, columna, listaTokens)
+                        call addToken(Palabra_clave, auxLex, inicio_lexema, inicio_col, listaTokens)
                     else if (trim(auxLex) == "add") then
-                        call addToken(ADD, auxLex, fila, columna, listaTokens)
+                        call addToken(ADD, auxLex, inicio_lexema, inicio_col, listaTokens)
                     else if (trim(auxLex) == "this") then
-                        call addToken(THIS, auxLex, fila, columna, listaTokens)
+                        call addToken(THIS, auxLex, inicio_lexema, inicio_col, listaTokens)
                     else if (trim(auxLex) == "Controles") then
-                        call addToken(nombre_bloque_Controles, auxLex, fila, columna, listaTokens)
+                        call addToken(nombre_bloque_Controles, auxLex, inicio_lexema, inicio_col, listaTokens)
                     else if (trim(auxLex) == "Propiedades") then
-                        call addToken(nombre_bloque_Propiedades, auxLex, fila, columna, listaTokens)
+                        call addToken(nombre_bloque_Propiedades, auxLex, inicio_lexema, inicio_col, listaTokens)
                     else if (trim(auxLex) == "Colocacion") then
-                        call addToken(nombre_bloque_Colocacion, auxLex, fila, columna, listaTokens)
+                        call addToken(nombre_bloque_Colocacion, auxLex, inicio_lexema, inicio_col, listaTokens)
                     else if (trim(auxLex) == "setColorLetra")then
-                        call addToken(Propiedad_setColorLetra, auxLex, fila, columna, listaTokens)
+                        call addToken(Propiedad_setColorLetraFondo, auxLex, inicio_lexema, inicio_col, listaTokens)
                     else if (trim(auxLex) == "setTexto")then
-                        call addToken(Propiedad_setTexto, auxLex, fila, columna, listaTokens)
+                        call addToken(Propiedad_setTexto, auxLex, inicio_lexema, inicio_col, listaTokens)
                     else if (trim(auxLex) == "setAlineacion")then
-                        call addToken(Propiedad_setAlineacion, auxLex, fila, columna, listaTokens)
+                        call addToken(Propiedad_setAlineacion, auxLex, inicio_lexema, inicio_col, listaTokens)
                     else if (trim(auxLex) == "setColorFondo")then
-                        call addToken(Propiedad_setColorFondo, auxLex, fila, columna, listaTokens)
+                        call addToken(Propiedad_setColorLetraFondo, auxLex, inicio_lexema, inicio_col, listaTokens)
                     else if (trim(auxLex) == "setMarcada")then
-                        call addToken(Propiedad_setMarcada, auxLex, fila, columna, listaTokens)
+                        call addToken(Propiedad_setMarcada, auxLex, inicio_lexema, inicio_col, listaTokens)
                     else if (trim(auxLex) == "setGrupo")then
-                        call addToken(Propiedad_setGrupo, auxLex, fila, columna, listaTokens)
+                        call addToken(Propiedad_setGrupo, auxLex, inicio_lexema, inicio_col, listaTokens)
                     else if (trim(auxLex) == "setAncho")then
-                        call addToken(Propiedad_setAncho, auxLex, fila, columna, listaTokens)
+                        call addToken(Propiedad_setAnto, auxLex, inicio_lexema, inicio_col, listaTokens)
                     else if (trim(auxLex) == "setAlto")then
-                        call addToken(Propiedad_setAlto, auxLex, fila, columna, listaTokens)
+                        call addToken(Propiedad_setAnto, auxLex, inicio_lexema, inicio_col, listaTokens)
                     else if (trim(auxLex) == "setPosicion")then
-                        call addToken(Propiedad_setPosicion, auxLex, fila, columna, listaTokens)
+                        call addToken(Control_setPosicion, auxLex, inicio_lexema, inicio_col, listaTokens)
+                    else if (trim(auxLex) == "true") then
+                        call addToken(TRUE_FALSE, auxLex, inicio_lexema, inicio_col, listaTokens)
+                    else if (trim(auxLex) == "false") then
+                        call addToken(TRUE_FALSE, auxLex, inicio_lexema, inicio_col, listaTokens)
+                    else if (trim(auxLex) == "derecho") then
+                        call addToken(ALINEACION, auxLex, inicio_lexema, inicio_col, listaTokens)
+                    else if (trim(auxLex) == "izquierdo") then
+                        call addToken(ALINEACION, auxLex, inicio_lexema, inicio_col, listaTokens)
+                    else if (trim(auxLex) == "centro") then
+                        call addToken(ALINEACION, auxLex, inicio_lexema, inicio_col, listaTokens)
                     else
-                        call addToken(IDENTIFICADOR, auxLex, fila, columna, listaTokens)
+                        call addToken(IDENTIFICADOR, auxLex, inicio_lexema, inicio_col, listaTokens)
                     end if
                     estado = 0
                     i = i - 1
+                    procesar_actual = .false.
                 end if
             case (5) ! Estado para procesar comentarios
                 if (c == '/') then
@@ -202,11 +212,12 @@ contains
             case (6) ! Estado para comentario de una línea
                 auxLex = trim(auxLex) // c
                 if (c == char(10)) then
-                    call addToken(COMENTARIO_LINEA, auxLex, fila, columna, listaTokens)
+                    call addToken(COMENTARIO_LINEA, auxLex, inicio_lexema, inicio_col, listaTokens)
                     estado = 0
                     auxLex = ""
                     fila = fila + 1
                     columna = 1
+                    procesar_actual = .false.
                 end if
     
             case (10) ! Estado para comentario de varias líneas
@@ -221,7 +232,7 @@ contains
             case (11) ! Estado para posible fin de comentario de varias líneas
                 auxLex = trim(auxLex) // c
                 if (c == '/') then
-                    call addToken(COMENTARIO_MULTILINEA, auxLex, fila, columna, listaTokens)
+                    call addToken(COMENTARIO_MULTILINEA, auxLex, inicio_lexema, inicio_col, listaTokens)
                     estado = 0
                     auxLex = ""
                 else if (c == char(10)) then
@@ -235,7 +246,7 @@ contains
             case (13) ! Estado para cadenas
                 auxLex = trim(auxLex) // c
                 if (c == '"' .and. auxLex(len_trim(auxLex)-1:len_trim(auxLex)-1) /= '\') then
-                    call addToken(CADENA, auxLex, fila, columna, listaTokens)
+                    call addToken(CADENA, auxLex, inicio_lexema, inicio_col, listaTokens)
                     estado = 0
                     auxLex = ""
                 else if (c == char(10)) then
@@ -243,17 +254,18 @@ contains
                     auxLex = ""
                     fila = fila + 1
                     columna = 1
+                    procesar_actual = .false.
                 end if
             end select
     
-            if (c /= char(10)) then
+            if (procesar_actual) then
                 columna = columna + 1
             end if
         end do
     end subroutine escanear
 
-        subroutine analizar(entrada, tokens, num_tokens, errores, num_errores)
-        character(len=*), intent(inout) :: entrada
+    subroutine analizar(entrada, tokens, num_tokens, errores, num_errores)
+        character(len=*), intent(in) :: entrada
         type(token), intent(out) :: tokens(MAX_TOKENS)
         integer, intent(out) :: num_tokens
         type(error), intent(out) :: errores(MAX_ERRORES)
@@ -286,7 +298,7 @@ contains
             case (0) ! Estado inicial
                 inicio_lexema = fila
                 inicio_col = columna
-                if (c == '{' .or. c == '}' .or. c == ':' .or. c == ';' .or. c == '(' .or. c == ')' .or. c == '.' .or. c == ',') then
+                if (c == ';' .or. c == '(' .or. c == ')' .or. c == '.' .or. c == ',') then
                     call agregar_token(tokens, num_tokens, c, get_token_type(c), fila, columna)
                 else if (c == '<' .or. c == '!' .or. c == '-' .or. c == '>') then
                     call agregar_token(tokens, num_tokens, c, get_token_type(c), fila, columna)
@@ -310,6 +322,7 @@ contains
                     end if
                 else
                     call agregar_error(errores, num_errores, "Caracter no reconocido", c, fila, columna, "LEXICO")
+                    c = ' '
                 end if
     
             case (2) ! Estado para identificadores o palabras reservadas
@@ -328,6 +341,12 @@ contains
                         call agregar_token(tokens, num_tokens, lexema_actual, "THIS", inicio_lexema, inicio_col)
                     else if (lexema_actual == "Controles" .or. lexema_actual == "Propiedades" .or. lexema_actual == "Colocacion") then
                         call agregar_token(tokens, num_tokens, lexema_actual, "nombre_bloque_" // trim(lexema_actual), inicio_lexema, inicio_col)
+                    else if (is_identificador_Parametro(lexema_actual)) then
+                        call agregar_token(tokens, num_tokens, lexema_actual, "TRUE_FALSE", inicio_lexema, inicio_col)                 
+                    else if (is_identificador_Alineacion(lexema_actual)) then
+                        call agregar_token(tokens, num_tokens, lexema_actual, "ALINEACION", inicio_lexema, inicio_col)
+                    else if (lexema_actual == "setPosicion")then
+                        call agregar_token(tokens, num_tokens, lexema_actual, "Control_setPosicion", inicio_lexema, inicio_col)
                     else
                         call agregar_token(tokens, num_tokens, lexema_actual, "IDENTIFICADOR", inicio_lexema, inicio_col)
                     end if
@@ -432,6 +451,12 @@ contains
                 call agregar_token(tokens, num_tokens, lexema_actual, "THIS", inicio_lexema, inicio_col)
             else if (lexema_actual == "Controles" .or. lexema_actual == "Propiedades" .or. lexema_actual == "Colocacion") then
                 call agregar_token(tokens, num_tokens, lexema_actual, "nombre_bloque_" // trim(lexema_actual), inicio_lexema, inicio_col)
+            else if (is_identificador_Parametro(lexema_actual)) then
+                call agregar_token(tokens, num_tokens, lexema_actual, "TRUE_FALSE", inicio_lexema, inicio_col)
+            else if (is_identificador_Alineacion(lexema_actual)) then
+                call agregar_token(tokens, num_tokens, lexema_actual, "ALINEACION", inicio_lexema, inicio_col)
+            else if (lexema_actual == "setPosicion")then
+                call agregar_token(tokens, num_tokens, lexema_actual, "Control_setPosicion", inicio_lexema, inicio_col)
             else
                 call agregar_token(tokens, num_tokens, lexema_actual, "IDENTIFICADOR", inicio_lexema, inicio_col)
             end if
@@ -512,8 +537,6 @@ contains
             tipo = "LLAVE_ABRE"
         case ('}')
             tipo = "LLAVE_CIERRA"
-        case (':')
-            tipo = "DOS_PUNTOS"
         case (';')
             tipo = "PUNTO_Y_COMA"
         case ('(')
@@ -524,8 +547,6 @@ contains
             tipo = "PUNTO"
         case (',')
             tipo = "COMA"
-        case ('=')
-            tipo = "IGUAL"
         case ('<')
             tipo = "MENOR_QUE"
         case ('!')
@@ -542,7 +563,7 @@ contains
     function is_identificador_especial(lexema) result(res)
         character(len=*), intent(in) :: lexema
         logical :: res
-        res = (lexema == "setColorLetra" .or. lexema == "setTexto" .or. lexema == "setAlineacion" .or. lexema == "setColorFondo" .or. lexema == "setMarcada" .or. lexema == "setGrupo" .or. lexema == "setAncho" .or. lexema == "setAlto" .or. lexema == "setPosicion")
+        res = (lexema == "setColorLetra" .or. lexema == "setTexto" .or. lexema == "setAlineacion" .or. lexema == "setColorFondo" .or. lexema == "setMarcada" .or. lexema == "setGrupo" .or. lexema == "setAncho" .or. lexema == "setAlto")
     end function is_identificador_especial
 
     function is_identificador_add(lexema) result(res)
@@ -556,6 +577,18 @@ contains
         logical :: res
         res = (lexema == "this")
     end function is_identificador_this
+
+    function is_identificador_Parametro(lexema) result(res)
+        character(len=*), intent(in) :: lexema
+        logical :: res
+        res = (lexema == "true" .or. lexema == "false")
+    end function is_identificador_Parametro
+
+    function is_identificador_Alineacion(lexema) result(res)
+        character(len=*), intent(in) :: lexema
+        logical :: res
+        res = (lexema == "derecho" .or. lexema == "izquierdo" .or. lexema == "centro")
+    end function is_identificador_Alineacion
 
     function is_palabra_clave(lexema) result(res)
         character(len=*), intent(in) :: lexema
@@ -631,13 +664,15 @@ contains
         integer :: i
     
         do i = 1, num_errores
-            write(*, '(A)') "ERROR" // "|" // trim(errores(i)%tipo) // "|" // trim(errores(i)%descripcion) // "|" // trim(errores(i)%token) // "|" // trim(itoa(errores(i)%fila)) // "|" // trim(itoa(errores(i)%columna))
+            write(*, '(A)') "ERROR" // "|" // trim(errores(i)%tipo) // "|" // trim(adjustl(errores(i)%descripcion(1:min(len_trim(errores(i)%descripcion), 7)))) // "|" // trim(errores(i)%token) // "|" // trim(itoa(errores(i)%fila)) // "|" // trim(itoa(errores(i)%columna))
         end do
     end subroutine imprimir_errores
 
-    subroutine generar_html(tokens, num_tokens)
+    subroutine generar_html(tokens, num_tokens, errores, num_errores)
         type(token), intent(in) :: tokens(MAX_TOKENS)
         integer, intent(in) :: num_tokens
+        type(error), intent(in) :: errores(MAX_ERRORES)
+        integer, intent(in) :: num_errores
         integer :: i, unidad
         
         open(newunit=unidad, file='resultado_analisis.html', status='replace')
@@ -654,21 +689,34 @@ contains
         write(unidad, '(A)') '        table { border-collapse: collapse; width: 100%; margin-top: 20px; }'
         write(unidad, '(A)') '        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }'
         write(unidad, '(A)') '        th { background-color: #f2f2f2; }'
+        write(unidad, '(A)') '        .error { background-color: #ffdddd; }'
         write(unidad, '(A)') '    </style>'
         write(unidad, '(A)') '</head>'
         write(unidad, '(A)') '<body>'
         write(unidad, '(A)') '    <h1>Resultado del Análisis Léxico</h1>'
-        write(unidad, '(A)') '    <h2>Tokens Identificados</h2>'
-        write(unidad, '(A)') '    <table>'
-        write(unidad, '(A)') '        <tr><th>No</th><th>Lexema</th><th>Tipo</th><th>Fila</th><th>Columna</th></tr>'
         
-        do i = 1, num_tokens
-            write(unidad, '(A,I0,A,A,A,A,A,I0,A,I0,A)') '        <tr><td>', i, '</td><td>', &
-                trim(tokens(i)%lexema), '</td><td>', trim(tokens(i)%tipo), '</td><td>', &
-                tokens(i)%fila, '</td><td>', tokens(i)%columna, '</td></tr>'
-        end do
+        if (num_errores > 0) then
+            write(unidad, '(A)') '    <h2>Errores Encontrados</h2>'
+            write(unidad, '(A)') '    <table>'
+            write(unidad, '(A)') '        <tr><th>No</th><th>Descripción</th><th>Caracter o Palabra</th><th>Fila</th><th>Columna</th></tr>'
+            do i = 1, num_errores
+                write(unidad, '(A,I0,A,A,A,A,A,I0,A,I0,A)') '        <tr class="error"><td>', i, '</td><td>', &
+                    trim(errores(i)%descripcion), '</td><td>', trim(errores(i)%token), '</td><td>', &
+                    errores(i)%fila, '</td><td>', errores(i)%columna, '</td></tr>'
+            end do
+            write(unidad, '(A)') '    </table>'
+        else
+            write(unidad, '(A)') '    <h2>Tokens Identificados</h2>'
+            write(unidad, '(A)') '    <table>'
+            write(unidad, '(A)') '        <tr><th>No</th><th>Lexema</th><th>Tipo</th><th>Fila</th><th>Columna</th></tr>'
+            do i = 1, num_tokens
+                write(unidad, '(A,I0,A,A,A,A,A,I0,A,I0,A)') '        <tr><td>', i, '</td><td>', &
+                    trim(tokens(i)%lexema), '</td><td>', trim(tokens(i)%tipo), '</td><td>', &
+                    tokens(i)%fila, '</td><td>', tokens(i)%columna, '</td></tr>'
+            end do
+            write(unidad, '(A)') '    </table>'
+        end if
         
-        write(unidad, '(A)') '    </table>'
         write(unidad, '(A)') '</body>'
         write(unidad, '(A)') '</html>'
         
@@ -709,13 +757,15 @@ program main
 
     if(num_errores > 0)then
         call imprimir_errores(errores, num_errores)
+        call escanear(entrada, listaTokens)
+        call generar_html(tokens, num_tokens, errores, num_errores)
+        call parsear1(listaTokens)
     else
         call escanear(entrada, listaTokens)
         call imprimir_tokens(tokens, num_tokens)
         call imprimir_lista_tokens(listaTokens)
+        call generar_html(tokens, num_tokens, errores, num_errores)
         call parsear1(listaTokens)
-        call imprimir_lista_tokens(listaTokens)
-        call generar_html(tokens, num_tokens)
     end if
     
 end program main

@@ -27,10 +27,12 @@ def Enviar_Datos():
             raise Exception(f"Error en Fortran: {resultado.stderr}")
 
         output = resultado.stdout.strip()
+        print(output)
 
         # Procesar el resultado del análisis
         tokens = []
         errores = []
+        errores_sintacticos = []
         lines = output.split("\n")
         for line in lines:
             print(f"Procesando línea: {line}")  # Imprimir cada línea para depuración
@@ -71,14 +73,19 @@ def Enviar_Datos():
 
         print(f"Total de tokens encontrados: {len(tokens)}")
         print(f"Total de errores encontrados: {len(errores)}")
+        print(f"Total de errores sintácticos encontrados: {len(errores_sintacticos)}")
 
         if errores:
             mostrar_errores(errores)
         else:
             mostrar_tokens(tokens)
+
     except Exception as e:
         print(f"Error: {str(e)}")
-        messagebox.showerror("Error", f"No se pudo ejecutar el análisis: {str(e)}")
+        messagebox.showerror(
+            "Error",
+            f"No se pudo ejecutar el análisis: {str(e)} \n Mire la tabla de errores",
+        )
 
 
 def mostrar_tokens(tokens):
